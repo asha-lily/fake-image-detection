@@ -65,7 +65,7 @@ While the most recent research is of interest, I have also sourced some older pa
  
 In my opinion the images in the CIFAKE dataset look clearly AI-generated, which is unsuprising given that this paper is a couple of years old and diffusion models have surpassed GANs as state-of-the-art.
 
-[Towards universal fake image detectors that generalize across generative models](https://arxiv.org/pdf/2302.10174) (April 2024)
+[Towards universal fake image detectors that generalize across generative models](https://arxiv.org/pdf/2302.10174) ('UniversalFakeDetect') (April 2024)
 - Highlighted that existing fake image detectors struggle to generalise to images from different generative models when trained on GAN-generated images
 - To address this, the authors propose constructing a feature space using CLIP:ViT, e.g using nearest neighbour search to classify real vs fake
 
@@ -93,5 +93,22 @@ In this study I found it interesting that the models generally rejected (i.e ref
 
 The [FakeExplained](https://arxiv.org/pdf/2504.14245) paper highlights the same issues, but attempts to address them in different ways. Like FakeExplained, the [AIGI-Holmes dataset](https://huggingface.co/datasets/zzy0123/AIGI-Holmes-Dataset) also labels images with bounding boxes and descriptions. Unfortunately, due to the lack of standardised benchmarks (as highlighted [here](https://arxiv.org/pdf/2511.02791)), the performance of these approaches can't be compared side-by-side.
 
-This study also highlights the limitations in a broader context: '*while MLLMs show promise in detecting AI-generated images, challenges remain in interpretability and alignment with human perception*...*ethically, ensuring transparency and accountability in detection models is critical, especially in sensitive areas like forensics and law enforcement.*'
+This study frames the limitations of MLLMs in a broader context: '*while MLLMs show promise in detecting AI-generated images, challenges remain in interpretability and alignment with human perception*...*ethically, ensuring transparency and accountability in detection models is critical, especially in sensitive areas like forensics and law enforcement.*'
+
+### Summary
+- Over the past few years, AI-generated image detection techniques have evolved from fine-tuning CNNs, to transformers and more recently, multi-modal LLMs.
+- Data was initially generated using GANs, but  diffusion models have become increasingly popular (I haven't yet explored the details of why this is)
+- CAM-based explainability techniques are often employed to identify areas of the image that the model focuses on / detects artifacts in
+- MLLMs, with their reasoning abilities, show some promise, but also present new challenges such as hallucinations
+
+
+## Experiment Ideas
+
+This research has given me some ideas to build upon my original plan of fine-tuning a model to classify real vs synthetic images. 
+
+My initial focus will be on fine-tuning a vision transformer. I like the idea implemented in [UniversalFakeDetect](https://arxiv.org/pdf/2302.10174): training on GAN-generated images and testing on diffusion-generated images in order to test the model's ability to generalise to images from a different model type. 
+
+Beyond this, I'd be interested to compare my model's performance to that of an MLLM, experimenting with prompt engineering techniques and potentially fine-tuning.
+
+Whether any of this is feasible depends on what data I can source. The next section will explore what suitable real & AI-generated data is publicly available.
 
