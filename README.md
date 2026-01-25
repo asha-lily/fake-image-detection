@@ -11,6 +11,11 @@ This project is a work in progress. This page documents the initial research pro
 - [Literature Review](#literature-review)
     - [Summary](#summary)
 - [Experiment Ideas](#experiment-ideas)
+- [Dataset](#dataset)
+    - [Synthetic Images](#synthetic-images)
+    - [Real Images](#real-images)
+    - [Image Augmentations](#image-augmentations)
+    - [The effect of image quality on overfitting in synthetic image detection](#the-effect-of-image-quality-on-overfitting-in-synthetic-image-detection)
 
 
 ## Introduction
@@ -141,10 +146,56 @@ My research into synthetic datasets is summarised in the table below. Note that 
 | [SFHQ_part1](https://www.kaggle.com/datasets/selfishgene/synthetic-faces-high-quality-sfhq-part-1) | GAN | 2022 / 2023 | yes | 0 | | 550 | All human faces | Creative commons |
 | [CocoGlide](https://arxiv.org/pdf/2212.10957) | diffusion | 2022 | maybe | 512 | | 512 | The synthetic images are very similar to the real ones - model just used for in-painting, not generation | Can’t find the original source! |
 
-From across AIS-4SD, SFHQ-T2I we have 2200 diffusion-generated images of human faces, so I'm restricted to focussing my experiments on human faces. Unfortunately the real images I’ve found so far are not of human faces, so I need to look for some of these. 
+From across AIS-4SD, SFHQ-T2I we have 2200 diffusion-generated images of human faces, so I'm restricted to focusing my experiments on human faces. Unfortunately the real images I’ve found so far are not of human faces, so I need to look for some of these. 
 
 One thing I need to look into is the dataset sizes that researchers have used in similar experiments. Given how difficult it's been to find the data summarised in the table, we'll initially use the ~2000 diffusion-generated images and look for 2000 real images of human faces to use alongside them.
 
 I could of course generate my own dataset; I will consider this in future work, but in the interest of time and resources I will use publicly avaiable data for now.
 
+Another idea for future work is to evaluate performance on test sets from different models, .eg
+- Baseline diffusion-generated images similar to the training data (human faces)
+- Diffusion-generated images that are not faces
+- GAN-generated images: we have 550 human faces from SFHQ_part1
 
+
+### Real Images
+
+| Dataset Name | Year of creation | Good enough to use? | Num real | Description | Licence |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| celeba | 2018 | no | 200,000 | poor quality | N/A |
+| FFHQ | 2022 | yes | 3000 | Produced by NVIDIA as part of the original StyleGAN paper | Creative commons: You can use, redistribute, and adapt it for non-commercial purposes, as long as you (a) give appropriate credit by citing our paper, (b) indicate any changes that you've made, and (c) distribute any derivative works under the same license. |
+
+### Image Augmentations
+
+[This paper](https://www.peren.gouv.fr/en/perenlab/2025-02-11_ai_summit/#lenjeu-interroger-les-d%C3%A9tecteurs-%C3%A0-l%C3%A9tat-de-lart-%C3%A0-bon-escient) from the French government focuses on the use of AI-generated content on social media, and the difficulty of detecting it. They apply transformations such as JPEG compression, addition of text, aesthetic filters and resizing, with the aim of imitating the progressive alteration of images as they are shared across social media. They highlight that manipulating synthetic images in ways such as these degrade the images and mask flaws related to their generation, *‘making it easier to deceive users and also impairing the capabilities of detection systems.’*
+
+Image augmentations are especially important to prevent patterns in image quality, composition etc - which differ between the real & synthetic datasets - being learned by the model. With the datasets I’m using, composition is something I’m concerned about because the real images are cropped quite close to the faces, and they tend to look head-on at the camera, whereas in the synthetic images the pose varies more and the position of and amount of background around the person varies. Therefore we should consider:
+- Applying random crops to both sets of images
+- To crop the synthetic images closer to the faces, perhaps we could use a face detection model to get a bounding box around the face and crop slightly outside of this?
+- Rotate the images
+
+To account for differences in the quality of the real & synthetic images, I will consider the following types of augmentations:
+- Adding blur / noise / jpeg compression to the diffusion-generated images to make the look lower quality (i.e more similar to the real images)
+- Vary image resolution
+
+There’s a huge amount of exploration I *could* do into the diversity of the real vs synthetic datasets in order to identify things that the model could learn to detect as a proxy for real vs synthetic. For example, skin tone, lighting, accessories such as glasses or hats, background (e.g inside vs outside), hair colour etc. We should apply transformations that vary these features as much as possible. Since we can't realistically account for all of these, we must acknowledge them as potential limitations in the model’s ability to learn features that actually distinguish real vs synthetic.
+
+### The effect of image quality on overfitting in synthetic image detection
+ 
+I did some research into the effect of image quality on overfitting in synthetic image detection.
+
+[A New Approach to Improve Learning-based Deepfake Detection](https://arxiv.org/pdf/2203.11807) (March 2022)
+- Addresses models overfitting to quality differences rather than semantic features.
+- '*Training with augmentations on the same dataset remarkably improves performance on nearly all kinds of processed data even with intense severity, including JPEG compression, Gaussian noise, Gaussian blur, and Gamma correction*'
+
+[Any-Resolution AI-Generated Image Detection by Spectral Learning](https://openaccess.thecvf.com/content/CVPR2025/papers/Karageorgiou_Any-Resolution_AI-Generated_Image_Detection_by_Spectral_Learning_CVPR_2025_paper.pdf) (March 2025)
+- Performance drops in all cases when augmentations are removed, highlighting their value. 
+
+[Fake or JPEG? Revealing Common Biases in Generated Image Detection Datasets](https://arxiv.org/html/2509.21864v1) (Sept 2025)
+- '*Strong biases exist in existing benchmarks toward JPEG compression (real images: compressed, fake images: uncompressed). Many detectors inadvertently learn to detect JPEG artifacts rather than generation artifacts*'.
+
+[Generalized Design Choices for Deepfake Detectors](https://arxiv.org/html/2511.21507) (Nov 2025)
+- '*While data augmentation is critical for robust detection, excessively strong augmentations may be counterproductive; augmentations that closely mimic realistic post-processing operations encountered in-the-wild provide more consistent improvements*'
+- Found that introducing repeated JPEG compression passes during training improves generalization capabilities
+
+In summary, the research validates my concerns about image quality and strongly recommends apply augmentations such as JPEG compression.
