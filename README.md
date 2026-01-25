@@ -93,6 +93,7 @@ In my opinion the images in the CIFAKE dataset look clearly AI-generated, which 
 - To address this, the authors propose constructing a feature space using CLIP:ViT, e.g using nearest neighbour search to classify real vs fake
 
 [AI-Generated Image Detection: An Empirical Study and Future Research Directions](https://arxiv.org/pdf/2511.02791) (Nov 2025)
+
 Highlights the following issues across AI-generated image detection research:
 - The limitations of forensic methods
 - The use of non-standardised benchmarks with GAN- or diffusion-generated images
