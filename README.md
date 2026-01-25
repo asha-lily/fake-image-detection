@@ -41,14 +41,19 @@ I'm also interested in using class activation map methods to visualise image art
 
 ## How are synthetic images generated?
 
-- GANs
-    - commonly used for face synthesis, e.g e.g StyleGAN
-    - also used for face morphing, e.g for generating synthetic identities
-    - can be used to generate speech & synchronise lip movements with audio in videos, e.g Wav2Lip
-- Autoencoders
-    - used for face swapping
-- Diffusion models
+**GANs**
+- Consist of a generator network that creates synthetic content, alongside a discriminator which tries to distnguish real vs synthetic. The two networks are trained in an adversarial process.
+- Commonly used for face synthesis, e.g e.g StyleGAN
+- Also used for face morphing, e.g for generating synthetic identities
+- Can be used to generate speech & synchronise lip movements with audio in videos, e.g Wav2Lip
 
+**Autoencoders**
+- An encoder embeds the image; a decoder reconstructs the image from the mebedding
+- Face swapping can be achieved by exchanging the encoded features between different images
+
+**Diffusion models**
+- Trained by iteratively adding noise to an image and trying to recreate the original image from the noise
+- Faster to train than GANs and don't require as much data, but slower at inference
 
 ## How are synthetic images detected?
 
