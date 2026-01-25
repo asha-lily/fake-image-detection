@@ -1,5 +1,18 @@
 # Fake Image Detection: Research Notes
 
+This project is a work in progress. This page documents the initial research process. No code has been written yet.
+
+## Table of Contents
+- [Introduction](#introduction)
+    - [Motivation](#motivation)
+    - [Aims](#aims)
+- [How are synthetic images generated?](#how-are-synthetic-images-generated)
+- [How are synthetic images detected?](#how-are-synthetic-images-detected)
+- [Literature Review](#literature-review)
+    - [Summary](#summary)
+- [Experiment Ideas](#experiment-ideas)
+
+
 ## Introduction
 
 ### Motivation
