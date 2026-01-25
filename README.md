@@ -125,3 +125,26 @@ Beyond this, I'd be interested to compare my model's performance to that of an M
 
 Whether any of this is feasible depends on what data I can source. The next section will explore what suitable real & AI-generated data is publicly available.
 
+## Dataset
+
+### Synthetic Images
+
+My research into synthetic datasets is summarised in the table below. Note that I looked specifically for GAN-generated and diffusion-generated images.
+
+| Dataset Name | Model Type | Year of creation | Good enough to use? | Num real | Description of real images | Num synthetic | Description of synthetic images | Licence |
+|-----|-----|-----|-----|-----|----------|-----|----------|-------|
+| [diffusion_datasets](https://github.com/WisconsinAIVision/UniversalFakeDetect) | diffusion | 2020 | no | 1000 | imagenet | 9000 | 1000 images from 9 different models | MIT (no restrictions)
+| [progan](https://github.com/WisconsinAIVision/UniversalFakeDetect) | GAN | 2020 | no | 4200 | 21 classes (objects & animals); 201 of each | 4200 | 21 classes (objects and animals); 201 of each | MIT (no restrictions) |
+| [dragon_train_xs](https://huggingface.co/datasets/lesc-unifi/dragon/tree/main) | diffusion | 2024 - 2025 | maybe | 0 | | 250 |  25 different models; only 10 images from each (same 10 prompts given to each model, so images are very similar) | Creative commons (fine for commercial & private use) |
+| [AIS-4SD](https://zenodo.org/records/15131117) | diffusion | 2025 | Only 500 faces are usable (StableDiffusion-3-faces-20250203-1545) | 0 | | 4000 | 4 different models; 1000 images from each. 500 of people & 500 of other generic things | MIT |
+| [SFHQ-T2I](https://www.kaggle.com/datasets/selfishgene/sfhq-t2i-synthetic-faces-from-text-2-image-models/data) | diffusion | 2023 / 2024 | yes | 0 | | 1700 |  All human faces. Produced by 2 different models. | MIT |
+| [SFHQ_part1](https://www.kaggle.com/datasets/selfishgene/synthetic-faces-high-quality-sfhq-part-1) | GAN | 2022 / 2023 | yes | 0 | | 550 | All human faces | Creative commons |
+| [CocoGlide](https://arxiv.org/pdf/2212.10957) | diffusion | 2022 | maybe | 512 | | 512 | The synthetic images are very similar to the real ones - model just used for in-painting, not generation | Can’t find the original source! |
+
+From across AIS-4SD, SFHQ-T2I we have 2200 diffusion-generated images of human faces, so I'm restricted to focussing my experiments on human faces. Unfortunately the real images I’ve found so far are not of human faces, so I need to look for some of these. 
+
+One thing I need to look into is the dataset sizes that researchers have used in similar experiments. Given how difficult it's been to find the data summarised in the table, we'll initially use the ~2000 diffusion-generated images and look for 2000 real images of human faces to use alongside them.
+
+I could of course generate my own dataset; I will consider this in future work, but in the interest of time and resources I will use publicly avaiable data for now.
+
+
