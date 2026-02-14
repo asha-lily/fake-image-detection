@@ -16,6 +16,10 @@ This project is a work in progress. This page documents the initial research pro
     - [Real Images](#real-images)
     - [Image Augmentations](#image-augmentations)
     - [The effect of image quality on overfitting in synthetic image detection](#the-effect-of-image-quality-on-overfitting-in-synthetic-image-detection)
+- [Choosing a pre-trained vision transformer](#choosing-a-pre-trained-vision-transformer)
+    - [ViT trained on ImageNet](#vit-trained-on-image-net)
+    - [ViT trained on CLIP](#vit-trained-on-clip)
+    - [Patch Sizes](#patch-sizes)
 
 
 ## Introduction
@@ -205,3 +209,23 @@ I did some research into the effect of image quality on overfitting in synthetic
 - Found that introducing repeated JPEG compression passes during training improves generalization capabilities
 
 In summary, the research validates my concerns about image quality and strongly recommends apply augmentations such as JPEG compression.
+
+## Choosing a pre-trained vision transformer
+
+Most open-source ViTs were pre-trained on ImageNet or CLIP. There is also the Laion dataset, which was used to train stable diffusion among other text-to-image models. It comes in 2 versions: one trained on 400 million images and the other trained on 5 billion.
+
+### ViT trained on ImageNet
+- The original release of ImageNet contained [3 ‘people’ categories](https://www.image-net.org/update-sep-17-2019.php): scuba diver, bridegroom & baseball player, out of a total of 1000 categories. Other categories may contain people, but they are not the main subject of the image.
+- In 2019, for privacy reasons all human faces in ImageNet were blurred
+
+### ViT trained on CLIP
+- [While OpenAI has never explicitly specified or shared the data used to train the original CLIP model, the CLIP paper mentions that the model was trained on 400 million image-text pairs collected from the Internet](https://voxel51.com/blog/a-history-of-clip-model-training-data-advances).
+- Presumably this data contained some human faces
+- Given that the faces in ImageNet were blurred but those used to train CLIP were not, perhaps CLIP is a better choice? Comparing the performance of the two is another experiment we could do, but to start with let’s use CLIP.
+- We can look on hugging face for open-source vision transformers that have been pre-trained on CLIP
+- Another choice to make is patch size
+
+### Patch sizes
+- The standard patch size for vision transformers is 16 x 16
+- Smaller patch sizes suit tasks that involve detecting small objects or high-resolution details, however their use also reduces computational efficiency
+- Image resolution should be divisible by batch size!
