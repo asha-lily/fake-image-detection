@@ -128,13 +128,22 @@ def load_test_dataset(test_samples: list, test_transforms: transforms.Compose) -
 
 
 def load_dataloaders(
-    train_dataset: FaceImageDataset,
-    val_dataset: FaceImageDataset,
-    test_dataset: FaceImageDataset,
     config: Config
     ) -> tuple[DataLoader, DataLoader, DataLoader]:
-    # add num workers?
+
+    all_samples = get_samples(config.data_root_dir)
+    train_samples, val_samples, test_samples = load_sample_subsets(all_samples, Config)
+    train_transforms = get_train_transforms(Config)
+    val_transforms = get_val_test_transforms(Config)
+    test_transforms = val_transforms
+
+    train_dataset = load_train_dataset(train_samples, train_transforms)
+    val_dataset = load_val_dataset(val_samples, val_transforms)
+    test_dataset = load_test_dataset(test_samples, test_transforms)
+
+    # add num workers?  
     train_dataloader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True)
     val_dataloader = DataLoader(val_dataset, batch_size=config.batch_size, shuffle=True)
     test_dataloader = DataLoader(test_dataset, batch_size=config.batch_size, shuffle=True)
+
     return train_dataloader, val_dataloader, test_dataloader
