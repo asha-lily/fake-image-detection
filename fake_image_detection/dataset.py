@@ -1,4 +1,10 @@
+import os
+import logging
+from pathlib import Path
+from transformers import CLIPProcessor
 import torchvision.transforms as transforms
+from fake_image_detection.config import Config
+from torch.utils.data import DataLoader
 
 log_config = logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(log_config)
@@ -58,7 +64,7 @@ def get_train_transforms(config: Config) -> transforms.Compose:
     ])
 
 
-def get_val_test_transforms(config.Config) -> transforms.Compose:
+def get_val_test_transforms(config: Config) -> transforms.Compose:
     return transforms.Compose([
         transforms.Resize(size=config.target_image_size),
         transforms.ToTensor(),
@@ -100,12 +106,12 @@ class FaceImageDataset:
 
 def load_sample_subsets(all_samples: list[tuple[Path, int]], config: Config) -> tuple[list[tuple[Path, int]], list[tuple[Path, int]], list[tuple[Path, int]]]:
     # shuffle samples
-    train_size = int(config.train_split * len(samples))
-    val_size = (len(samples) - train_size) // 2
+    train_size = int(config.train_split * len(all_samples))
+    val_size = (len(all_samples) - train_size) // 2
 
-    train_samples = samples[:train_size]
-    val_samples = samples[train_size:train_size + val_size]
-    test_samples = samples[train_size + val_size:]
+    train_samples = all_samples[:train_size]
+    val_samples = all_samples[train_size:train_size + val_size]
+    test_samples = all_samples[train_size + val_size:]
     return train_samples, val_samples, test_samples
 
 
@@ -131,7 +137,7 @@ def load_dataloaders(
     config: Config
     ) -> tuple[DataLoader, DataLoader, DataLoader]:
 
-    all_samples = get_samples(config.data_root_dir)
+    all_samples = get_all_samples(config.data_root_dir)
     train_samples, val_samples, test_samples = load_sample_subsets(all_samples, Config)
     train_transforms = get_train_transforms(Config)
     val_transforms = get_val_test_transforms(Config)

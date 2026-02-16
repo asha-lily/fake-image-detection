@@ -1,3 +1,4 @@
+from pathlib import Path
 from dataclasses import dataclass
 
 @dataclass
@@ -12,7 +13,7 @@ class Config:
     prob_jpeg_compress: float = 0.5
     prob_blur: float = 0.05
     prob_random_crop: float = 0.2
-    jpeg_quality_range: list[int, int] = [20,100]
+    jpeg_quality_range: tuple[int, int] = (20,100)
     gaussian_blur_kernel_size = 7
 
     train_split: float = 0.6
