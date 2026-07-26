@@ -1,8 +1,12 @@
 # Fake Image Detection: Research Notes
 
-This project is a work in progress. This page documents the initial research process.
+This project is a work in progress. 
 
-After reading this, proceed to `notebooks/dataset_exploration.ipynb`.
+This page documents the initial research process.
+
+The process of building the dataset is documented in `notebooks/dataset_exploration.ipynb`.
+
+The actual training process is initiated from `train.py`, which imports from python files in `fake_image_detection`.
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -229,5 +233,15 @@ Most open-source ViTs were pre-trained on ImageNet or CLIP. There is also the La
 
 ### Patch sizes
 - The standard patch size for vision transformers is 16 x 16
-- Smaller patch sizes suit tasks that involve detecting small objects or high-resolution details, however their use also reduces computational efficiency so we'll need to balance these 2 effects
+- Smaller patch sizes suit tasks that involve detecting small objects or high-resolution details, however their use also reduces computational efficiency. We'll start with a patch size of 16 x 16 and review whether there are any issues with computational efficiency.
 - Image resolution should be divisible by batch size!
+
+Next, see `notebooks/dataset_exploration.ipynb`, which documents building of the dataset.
+
+### Future Ideas
+- does balancing the classes improve performance
+    - stratified sampling
+- K-fold cross-validation? Since we don't have a huge amount of data
+- performance metrics
+- batch size (depends on GPU memory capacity)
+- effect of num steps on performance
