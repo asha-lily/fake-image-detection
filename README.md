@@ -1,6 +1,8 @@
 # Fake Image Detection: Research Notes
 
-This project is a work in progress. This page documents the initial research process. No code has been written yet.
+This project is a work in progress. This page documents the initial research process.
+
+After reading this, proceed to `notebooks/dataset_exploration.ipynb`.
 
 ## Table of Contents
 - [Introduction](#introduction)
