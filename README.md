@@ -52,7 +52,7 @@ I'm also interested in using class activation map methods to visualise image art
 - Can be used to generate speech & synchronise lip movements with audio in videos, e.g Wav2Lip
 
 **Autoencoders**
-- An encoder embeds the image; a decoder reconstructs the image from the mebedding
+- An encoder embeds the image; a decoder reconstructs the image from the embedding
 - Face swapping can be achieved by exchanging the encoded features between different images
 
 **Diffusion models**
