@@ -77,7 +77,7 @@ I'm also interested in using class activation map methods to visualise image art
 
 ## Literature Review
 
-While the most recent research is of interest, I have also sourced some older papers (2023) in order to understand how research has progressed over the past few years.Another purpose of this literature review is to source data that I can use in my own experiments.
+While the most recent research is of interest, I have also sourced some older papers (2023) in order to understand how research has progressed over the past few years. Another purpose of this literature review is to source data that I can use in my own experiments.
 
 [AI-Generated Image Detection: Baraheem et al.](https://www.mdpi.com/2313-433X/9/10/199) (Sept 2023)
 - Creates a framework to detect GAN-generated images using transfer learning on pre-trained CNN classifiers
@@ -109,7 +109,7 @@ Highlights the following issues across AI-generated image detection research:
 - Produced ~9000 AI-generated images annotated with bounding boxes & descriptive captions highlighting synthesis artifacts
 
 [ThinkFake: Reasoning in Multimodal LLMs for AI-generated Image Detection](https://arxiv.org/pdf/2509.19841)
-- Highlights that directly prompting MLLMs (e.g 'explain what the artifacts are') to generate textual explanations often results in hallucinations or overthinking, leading to inaccuracte outcomes or refusal to respond
+- Highlights that directly prompting MLLMs (e.g '*explain what the artifacts are*') to generate textual explanations often results in hallucinations or overthinking, leading to inaccuracte outcomes or refusal to respond
 - Researchers are employing fine-tuning approaches such as LoRA or DPO to overcome these limitations; these methods tend to memorise training patterns, which is then addressed using GRPO to enhance the model's ability to 'think'
 
 [Towards Explainable Fake Image Detection with Multi-Modal Large Language Models](https://arxiv.org/pdf/2504.14245) (Nov 2025)
@@ -146,17 +146,17 @@ Whether any of this is feasible depends on what data I can source. The next sect
 
 My research into synthetic datasets is summarised in the table below. Note that I looked specifically for GAN-generated and diffusion-generated images.
 
-| Dataset Name | Model Type | Year of creation | Good enough to use? | Num real | Description of real images | Num synthetic | Description of synthetic images | Licence |
+| Dataset Name | Model Type | Year of creation | Good enough quality to use? | Num real | Description of real images | Num synthetic | Description of synthetic images | Licence |
 |-----|-----|-----|-----|-----|----------|-----|----------|-------|
-| [diffusion_datasets](https://github.com/WisconsinAIVision/UniversalFakeDetect) | diffusion | 2020 | no | 1000 | imagenet | 9000 | 1000 images from 9 different models | MIT (no restrictions)
-| [progan](https://github.com/WisconsinAIVision/UniversalFakeDetect) | GAN | 2020 | no | 4200 | 21 classes (objects & animals); 201 of each | 4200 | 21 classes (objects and animals); 201 of each | MIT (no restrictions) |
-| [dragon_train_xs](https://huggingface.co/datasets/lesc-unifi/dragon/tree/main) | diffusion | 2024 - 2025 | maybe | 0 | | 250 |  25 different models; only 10 images from each (same 10 prompts given to each model, so images are very similar) | Creative commons (fine for commercial & private use) |
-| [AIS-4SD](https://zenodo.org/records/15131117) | diffusion | 2025 | Only 500 faces are usable (StableDiffusion-3-faces-20250203-1545) | 0 | | 4000 | 4 different models; 1000 images from each. 500 of people & 500 of other generic things | MIT |
-| [SFHQ-T2I](https://www.kaggle.com/datasets/selfishgene/sfhq-t2i-synthetic-faces-from-text-2-image-models/data) | diffusion | 2023 / 2024 | yes | 0 | | 1700 |  All human faces. Produced by 2 different models. | MIT |
-| [SFHQ_part1](https://www.kaggle.com/datasets/selfishgene/synthetic-faces-high-quality-sfhq-part-1) | GAN | 2022 / 2023 | yes | 0 | | 550 | All human faces | Creative commons |
-| [CocoGlide](https://arxiv.org/pdf/2212.10957) | diffusion | 2022 | maybe | 512 | | 512 | The synthetic images are very similar to the real ones - model just used for in-painting, not generation | Can’t find the original source! |
+| [diffusion_datasets](https://github.com/WisconsinAIVision/UniversalFakeDetect) | Diffusion | 2020 | No | 1000 | imagenet | 9000 | 1000 images from 9 different models | MIT (no restrictions)
+| [progan](https://github.com/WisconsinAIVision/UniversalFakeDetect) | GAN | 2020 | No | 4200 | 21 classes (objects & animals); 201 of each | 4200 | 21 classes (objects and animals); 201 of each | MIT (no restrictions) |
+| [dragon_train_xs](https://huggingface.co/datasets/lesc-unifi/dragon/tree/main) | Diffusion | 2024 - 2025 | Maybe | 0 | | 250 |  25 different models; only 10 images from each (same 10 prompts given to each model, so images are very similar) | Creative commons (fine for commercial & private use) |
+| [AIS-4SD](https://zenodo.org/records/15131117) | Diffusion | 2025 | Only 500 faces are usable (StableDiffusion-3-faces-20250203-1545) | 0 | | 4000 | 4 different models; 1000 images from each. 500 of people & 500 of other generic things | MIT |
+| [SFHQ-T2I](https://www.kaggle.com/datasets/selfishgene/sfhq-t2i-synthetic-faces-from-text-2-image-models/data) | Diffusion | 2023 / 2024 | Yes | 0 | | 1700 |  All human faces. Produced by 2 different models. | MIT |
+| [SFHQ_part1](https://www.kaggle.com/datasets/selfishgene/synthetic-faces-high-quality-sfhq-part-1) | GAN | 2022 / 2023 | Yes | 0 | | 550 | All human faces | Creative commons |
+| [CocoGlide](https://arxiv.org/pdf/2212.10957) | Diffusion | 2022 | Maybe | 512 | | 512 | The synthetic images are very similar to the real ones - model just used for in-painting, not generation | Can’t find the original source! |
 
-From across AIS-4SD, SFHQ-T2I we have 2200 diffusion-generated images of human faces, so I'm restricted to focusing my experiments on human faces. Unfortunately the real images I’ve found so far are not of human faces, so I need to look for some of these. 
+From across AIS-4SD & SFHQ-T2I we have 2200 diffusion-generated images of human faces, so I'm restricted to focusing my experiments on human faces. Unfortunately the real images I’ve found so far are not of human faces, so I need to look for some of these. 
 
 One thing I need to look into is the dataset sizes that researchers have used in similar experiments. Given how difficult it's been to find the data summarised in the table, we'll initially use the ~2000 diffusion-generated images and look for 2000 real images of human faces to use alongside them.
 
@@ -172,8 +172,8 @@ Another idea for future work is to evaluate performance on test sets from differ
 
 | Dataset Name | Year of creation | Good enough to use? | Num real | Description | Licence |
 | ----- | ----- | ----- | ----- | ----- | ----- |
-| celeba | 2018 | no | 200,000 | poor quality | N/A |
-| FFHQ | 2022 | yes | 3000 | Produced by NVIDIA as part of the original StyleGAN paper | Creative commons: You can use, redistribute, and adapt it for non-commercial purposes, as long as you (a) give appropriate credit by citing our paper, (b) indicate any changes that you've made, and (c) distribute any derivative works under the same license. |
+| celeba | 2018 | No | 200,000 | Poor quality | N/A |
+| FFHQ | 2022 | Yes | 3000 | Produced by NVIDIA as part of the original StyleGAN paper | Creative commons: You can use, redistribute, and adapt it for non-commercial purposes, as long as you (a) give appropriate credit by citing our paper, (b) indicate any changes that you've made, and (c) distribute any derivative works under the same license. |
 
 ### Image Augmentations
 
@@ -208,7 +208,7 @@ I did some research into the effect of image quality on overfitting in synthetic
 - '*While data augmentation is critical for robust detection, excessively strong augmentations may be counterproductive; augmentations that closely mimic realistic post-processing operations encountered in-the-wild provide more consistent improvements*'
 - Found that introducing repeated JPEG compression passes during training improves generalization capabilities
 
-In summary, the research validates my concerns about image quality and strongly recommends apply augmentations such as JPEG compression.
+In summary, the research validates my concerns about image quality and strongly recommends applying augmentations such as JPEG compression.
 
 ## Choosing a pre-trained vision transformer
 
@@ -221,11 +221,11 @@ Most open-source ViTs were pre-trained on ImageNet or CLIP. There is also the La
 ### ViT trained on CLIP
 - [While OpenAI has never explicitly specified or shared the data used to train the original CLIP model, the CLIP paper mentions that the model was trained on 400 million image-text pairs collected from the Internet](https://voxel51.com/blog/a-history-of-clip-model-training-data-advances).
 - Presumably this data contained some human faces
-- Given that the faces in ImageNet were blurred but those used to train CLIP were not, perhaps CLIP is a better choice? Comparing the performance of the two is another experiment we could do, but to start with let’s use CLIP.
+- Given that the faces in ImageNet were blurred but those used to train CLIP were not, perhaps CLIP is a better choice. Comparing the performance of the two is another experiment we could do, but to start with let’s use CLIP.
 - We can look on hugging face for open-source vision transformers that have been pre-trained on CLIP
 - Another choice to make is patch size
 
 ### Patch sizes
 - The standard patch size for vision transformers is 16 x 16
-- Smaller patch sizes suit tasks that involve detecting small objects or high-resolution details, however their use also reduces computational efficiency
+- Smaller patch sizes suit tasks that involve detecting small objects or high-resolution details, however their use also reduces computational efficiency so we'll need to balance these 2 effects
 - Image resolution should be divisible by batch size!
