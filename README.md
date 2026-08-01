@@ -46,7 +46,7 @@ I'd like to learn more about both how this content - specifically images - is ge
 
 Once I have an understanding of the current state of research in this area, I plan to run experiments of my own, fine-tuning open-source models to classify real vs synthetic images. Given time and computational resource constraints, my aim won't be to produce the best model possible, but rather to see what can be achieved with models such as CNNs and transformers.
 
-I'm also interested in using class activation map methods to visualise image artifacts that models learn in order to distinguish real from synthetic. 
+Given enough time I'd be interested in using class activation map methods to visualise image artifacts that models learn in order to distinguish real from synthetic. 
 
 
 ## How are synthetic images generated?
@@ -84,17 +84,26 @@ There isn't a definitive source for which synthetic-image-generation models are 
 
 - Traditional techniques
     - digital "forensics", e.g looking at patterns in noise
-    - these techniques can be bypassed by modern generation models
+    - modern generators don't leave behind the artifacts that these techniques rely on
 - CNNs
-    - Notably, the 2020 Wang et al paper (see [literature review paper 1](#paper-1)) found that systematic flaws in CNN-generated images could be detected by a CNN classifier
+    - Notably, the 2020 Wang et al paper (see [literature review paper 1](#paper-1)) found that systematic flaws in CNN-generated images could be detected by a CNN classifier.
+    - CNNs remain competitive as synthetic image detectors  
 - Frequency / spectral methods
     - See [literature review paper 10](#paper-10), which detects spectral artifacts created by GANs
+    - Diffusion models leave weaker spectral artifacts than GANs, so this method is less effective at detection diffusion-generated images.
 - Transformers
 - Autoencoders
-- Watermarking
-    - e.g Google SynthID
+- Multi-modal LLMs (MLLMs)
+    - Detects things like impossible geometry, lighting inconsistencies etc, however these inconsistencies are becoming less common as generation methods improve
 
-While not a detection method as such, it's worth highlighting C2PA. This is an industry-wide standard that uses cryptographically-signed metadata to provide secure & verifiable records of a media file's origin and changes.
+#### Watermarking & C2PA
+
+Some model providers such as Google add invisible watermarks to their images to enable end-users to identify the image as AI-generated (only certain models / platforms such as Google's Gemini can detect the watermark). While Google's SynthID watermark was designed to be robust to image transformations / manipulations such as compression and filtering, there is some evidence that the watermark can be removed.
+
+C2PA is another approach to labelling AI-generated content. It uses cryptographically-signed metadata to provide secure & verifiable records of a media file's origin and changes. Currently, C2PA metadata gets stripped when downloading an image from a social media site or simply taking a screenshot of an image.
+
+In August 2026 the EU AI Act will mandate that AI-generated image, audio and text must be tagged as AI-generated, using both a machine-readable watermark and a human-readable label.
+
 
 ## Literature Review
 
@@ -256,7 +265,7 @@ Most open-source ViTs were pre-trained on ImageNet or CLIP. There is also the La
 ### Patch sizes
 - The standard patch size for vision transformers is 16 x 16
 - Smaller patch sizes suit tasks that involve detecting small objects or high-resolution details, however their use also reduces computational efficiency. We'll start with a patch size of 16 x 16 and review whether there are any issues with computational efficiency.
-- Image resolution should be divisible by batch size!
+- Image resolution should be divisible by patch size!
 
 Next, see `notebooks/dataset_exploration.ipynb`, which documents building the dataset.
 
