@@ -60,6 +60,7 @@ Given enough time I'd be interested in using class activation map methods to vis
 **Autoencoders**
 - An encoder embeds the image; a decoder reconstructs the image from the embedding
 - Face swapping can be achieved by exchanging the encoded features between different images
+- *Variational* autoencoders are a distinct type of autoencoder which encode a continuous, probabilistic representation of the latent space (as opposed to a fixed, discrete representation). By sampling from this distribution they can generate new data similar to the original training data.
 
 **Diffusion models**
 - Trained by iteratively adding noise to an image and trying to recreate the original image from the noise
@@ -92,9 +93,12 @@ There isn't a definitive source for which synthetic-image-generation models are 
     - See [literature review paper 10](#paper-10), which detects spectral artifacts created by GANs
     - Diffusion models leave weaker spectral artifacts than GANs, so this method is less effective at detection diffusion-generated images.
 - Transformers
+    - E.g fine-tuned vision transformer classifiers
+    - Some studies have found that transformers outperform CNNs on this task, which may be due to their ability to learn global features which are more likely to survive image transformations than the local features that CNNs learn.
 - Autoencoders
+    - An image is passed through the autoencoder of a latent diffusion model
 - Multi-modal LLMs (MLLMs)
-    - Detects things like impossible geometry, lighting inconsistencies etc, however these inconsistencies are becoming less common as generation methods improve
+    - Detects semantic signals like impossible geometry, lighting inconsistencies (e.g between a subject and the background) etc, however these inconsistencies are becoming less common as generation methods improve
 
 #### Watermarking & C2PA
 
