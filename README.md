@@ -51,6 +51,8 @@ Given enough time I'd be interested in using class activation map methods to vis
 
 ## How are synthetic images generated?
 
+The main architectures are outlined in this section.
+
 **GANs**
 - Consist of a generator network that creates synthetic content, alongside a discriminator which tries to distnguish real vs synthetic. The two networks are trained in an adversarial process.
 - Commonly used for face synthesis, e.g e.g StyleGAN
@@ -60,11 +62,18 @@ Given enough time I'd be interested in using class activation map methods to vis
 **Autoencoders**
 - An encoder embeds the image; a decoder reconstructs the image from the embedding
 - Face swapping can be achieved by exchanging the encoded features between different images
-- *Variational* autoencoders are a distinct type of autoencoder which encode a continuous, probabilistic representation of the latent space (as opposed to a fixed, discrete representation). By sampling from this distribution they can generate new data similar to the original training data.
+- *Variational* autoencoders (VAEs) are a distinct type of autoencoder which encode a continuous, probabilistic representation of the latent space (as opposed to a fixed, discrete representation). By sampling from this distribution they can generate new data similar to the original training data.
 
 **Diffusion models**
-- Trained by iteratively adding noise to an image and trying to recreate the original image from the noise
-- Faster to train than GANs and don't require as much data, but slower at inference
+- Trained by iteratively adding noise to an image and trying to recreate the original image from the noise. This is specifically referred to as 'pixel diffusion'.
+- 'Latent' diffusion, as used by the StableDiffusion & FLUX models, actually involves VAEs. A VAE is pre-trained on real images, then the diffusion process runs in the VAE's latent space, as this is less computationally expensive than running diffusion in higher-dimensional pixel space (as in 'pixel diffusion').
+    - Most open-source models are 'latent diffusion' models as they are relatively cheap to train and run.
+- Diffusion Transformers replace the traditional U-Net architecture of diffusion models with a transformer. The latent (i.e the downsampled image) is split into patches and processed by a transformer. This architecture is used in the FLUX and SD3 models.
+    - Unlike latent diffusion
+
+**Native multi-modal LLMs**
+- This differs from text-to-pixel translation
+- E.g Google's Nano Banana
 
 ### Timeline
 
@@ -74,12 +83,13 @@ Given enough time I'd be interested in using class activation map methods to vis
 - 2024: Flow matching + DiT backbones (e.g SD3, FLUX.1)
 - 2025 - 2026: Native multi-modal LLM generation
 
+The field has transitioned from convolution-based architectures (GANs, autoencoders) to transformer-based architectures (diffusion transformers, multi-modal LLMs).
+
 There isn't a definitive source for which synthetic-image-generation models are the 'best' at the moment. However, a few that I found often appeared near the top of the rankings include:
 
 - FLUX.2 Pro: known for its high quality
 - Midjourney V8.1: known for its artistic style
 - Stable Diffusion 3.5: open-source
-
 
 ## How are synthetic images detected?
 
@@ -99,6 +109,10 @@ There isn't a definitive source for which synthetic-image-generation models are 
     - An image is passed through the autoencoder of a latent diffusion model
 - Multi-modal LLMs (MLLMs)
     - Detects semantic signals like impossible geometry, lighting inconsistencies (e.g between a subject and the background) etc, however these inconsistencies are becoming less common as generation methods improve
+
+### Timeline
+
+Like with generation models, detection models have transitioned from convolution-based to transformer-based architectures.
 
 #### Watermarking & C2PA
 
