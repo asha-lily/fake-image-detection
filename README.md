@@ -69,26 +69,19 @@ The main architectures are outlined in this section.
 - 'Latent' diffusion, as used by the StableDiffusion & FLUX models, actually involves VAEs. A VAE is pre-trained on real images, then the diffusion process runs in the VAE's latent space, as this is less computationally expensive than running diffusion in higher-dimensional pixel space (as in 'pixel diffusion').
     - Most open-source models are 'latent diffusion' models as they are relatively cheap to train and run.
 - Diffusion Transformers replace the traditional U-Net architecture of diffusion models with a transformer. The latent (i.e the downsampled image) is split into patches and processed by a transformer. This architecture is used in the FLUX and SD3 models.
-    - Unlike latent diffusion
 
 **Multi-modal LLMs**
-- These models understand images and can also generate them. This is different from an image generator attached to a text encoder. In the same way that an LLM predicts the next text token in a sequence, a native multi-modal LLM can predict the next image token (in the same sequence as the text).
-- The architecture consists of 3 components: an LLM backbone, a diffusion head and a VAE decoder.
-    - LLM backbone: transformer. Converts everything in the content window (text prompts, images etc) into a sequence of image latents; this is a compressed numerical description of the image to be made. The LLM draws on its knowledge and skills (e.g reasoning) figure out how to produce image latents that match the text prompt.
-    - Diffusion head: the image latents produced by the LLM backbone are blurry / noisy. The diffusion head refines them.
-    - VAE decoder: expands the compressed latents into pixels.
-- Google's Nano Banana and GPT Image 2 are examples of such a model. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image by giving the model a text prompt.
+- These models understand images and can also generate them. This is different from an image generator attached to a text encoder. In the same way that an LLM predicts the next text token in a sequence, a native multi-modal LLM can predict the next image token (in the same sequence as the text). The LLM draws on its knowledge and skills (e.g reasoning) figure out how to produce images that match the text prompt. This is why this architecture has shown an improvement in generating images containing text.
+- Google's Nano Banana and GPT Image 2 are examples of such a model. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image by giving the model a text prompt. The exact architecures of these examples are not published, however there are open-source alternatives such as BAGEL and Qwen Image. The latter consists of 3 components: an MLLM, a VAE and a diffusion transformer.
 
 
 ### Timeline
 
-- 2014 - 2020: VAEs & GANs (e.g StyleGAN, BigGAN)
-- 2020 - 2021: Pixel diffusion (e.g DDPM, guided diffusion)
-- 2022 - 2023: Text-to-image latent diffusion (DALL-E 2/3, Imagen, Midjourney)
-- 2024: Flow matching + DiT backbones (e.g SD3, FLUX.1)
-- 2025 - 2026: Native multi-modal LLM generation
+<center>
+ <img src='image.png' width='50%' />
+</center>
 
-The field has transitioned from convolution-based architectures (GANs, autoencoders) to transformer-based architectures (diffusion transformers, multi-modal LLMs).
+The field has transitioned from convolution-based architectures (GANs, autoencoders) to transformer-based architectures (diffusion transformers, multi-modal LLMs). Later we'll see how detection methods have evolved accordingly.
 
 There isn't a definitive source for which synthetic-image-generation models are the 'best' at the moment. However, a few that I found often appeared near the top of the rankings include:
 
