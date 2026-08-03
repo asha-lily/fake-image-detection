@@ -71,9 +71,14 @@ The main architectures are outlined in this section.
 - Diffusion Transformers replace the traditional U-Net architecture of diffusion models with a transformer. The latent (i.e the downsampled image) is split into patches and processed by a transformer. This architecture is used in the FLUX and SD3 models.
     - Unlike latent diffusion
 
-**Native multi-modal LLMs**
-- This differs from text-to-pixel translation
-- E.g Google's Nano Banana
+**Multi-modal LLMs**
+- These models understand images and can also generate them. This is different from an image generator attached to a text encoder. In the same way that an LLM predicts the next text token in a sequence, a native multi-modal LLM can predict the next image token (in the same sequence as the text).
+- The architecture consists of 3 components: an LLM backbone, a diffusion head and a VAE decoder.
+    - LLM backbone: transformer. Converts everything in the content window (text prompts, images etc) into a sequence of image latents; this is a compressed numerical description of the image to be made. The LLM draws on its knowledge and skills (e.g reasoning) figure out how to produce image latents that match the text prompt.
+    - Diffusion head: the image latents produced by the LLM backbone are blurry / noisy. The diffusion head refines them.
+    - VAE decoder: expands the compressed latents into pixels.
+- Google's Nano Banana and GPT Image 2 are examples of such a model. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image by giving the model a text prompt.
+
 
 ### Timeline
 
@@ -106,7 +111,7 @@ There isn't a definitive source for which synthetic-image-generation models are 
     - E.g fine-tuned vision transformer classifiers
     - Some studies have found that transformers outperform CNNs on this task, which may be due to their ability to learn global features which are more likely to survive image transformations than the local features that CNNs learn.
 - Autoencoders
-    - An image is passed through the autoencoder of a latent diffusion model
+    - An image is passed through the autoencoder of a latent diffusion model ???
 - Multi-modal LLMs (MLLMs)
     - Detects semantic signals like impossible geometry, lighting inconsistencies (e.g between a subject and the background) etc, however these inconsistencies are becoming less common as generation methods improve
 
