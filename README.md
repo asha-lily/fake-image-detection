@@ -78,7 +78,7 @@ The main architectures are outlined in this section.
 ### Timeline
 
 <center>
- <img src='image-1.png' width='50%' />
+ <img src="readme_images/generation_timeline.png" width='50%' />
 </center>
 
 The field has transitioned from convolution-based architectures (GANs, autoencoders) to transformer-based architectures (diffusion transformers, multi-modal LLMs). Later we'll see how detection methods have evolved accordingly.
