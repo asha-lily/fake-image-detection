@@ -42,11 +42,11 @@ The motivation for this research project comes from the increasing prevalence of
 
 The technology used to generate images, video, audio etc is advancing faster than our ability to reliably detect synthetic content. As the European Parliament notes in their [2025 briefing](https://www.europarl.europa.eu/RegData/etudes/BRIE/2025/775855/EPRS_BRI%282025%29775855_EN.pdf) on 'Children and deepfakes': '*no single robust solution currently exists to detect and reduce the spread of harmful AI-generated content.*'
 
-I'd like to learn more about both how this content - specifically images - is generated and how we can detect it. 
+I'd like to learn more about how synthetic images are generated and how we can detect them. 
 
-Once I have an understanding of the current state of research in this area, I plan to run experiments of my own, fine-tuning open-source models to classify real vs synthetic images. Given time and computational resource constraints, my aim won't be to produce the best model possible, but rather to see what can be achieved with models such as CNNs and transformers.
+Once I have an understanding of the current state of research in this area, I plan to run experiments of my own. Given time and computational resource constraints, my aim won't be to produce the best model possible, but rather to see what can be achieved by fine-tuning models on ~1000s of images.
 
-Given enough time I'd be interested in using class activation map methods to visualise image artifacts that models learn in order to distinguish real from synthetic. 
+Given enough time I'd be interested in using techniques such as class activation map methods to visualise image artifacts that models learn in order to distinguish real from synthetic. 
 
 
 ## How are synthetic images generated?
