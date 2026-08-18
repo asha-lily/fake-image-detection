@@ -54,25 +54,26 @@ Given enough time I'd be interested in using techniques such as class activation
 The main architectures are outlined in this section.
 
 **GANs**
-- Consist of a generator network that creates synthetic content, alongside a discriminator which tries to distnguish real vs synthetic. The two networks are trained in an adversarial process.
-- Commonly used for face synthesis, e.g e.g StyleGAN
+- Consist of a generator network that creates synthetic content, alongside a discriminator which tries to distinguish real vs synthetic. The two networks are trained in an adversarial process.
+- Commonly used for face synthesis, e.g StyleGAN
 - Also used for face morphing, e.g for generating synthetic identities
-- Can be used to generate speech & synchronise lip movements with audio in videos, e.g Wav2Lip
+- Can be used to synchronise lip movements with audio in videos, e.g Wav2Lip
 
 **Autoencoders**
 - An encoder embeds the image; a decoder reconstructs the image from the embedding
 - Face swapping can be achieved by exchanging the encoded features between different images
-- *Variational* autoencoders (VAEs) are a distinct type of autoencoder which encode a continuous, probabilistic representation of the latent space (as opposed to a fixed, discrete representation). By sampling from this distribution they can generate new data similar to the original training data.
+- *Variational* autoencoders (VAEs) are a distinct type of autoencoder. While a basic autoencoder encodes an image to the same set of features every time (i.e it's deterministic), a variational autoencoder encodes a probaility distribution for each feature. Therefore, by sampling from this distribution they can generate new data similar to the original training data.
 
 **Diffusion models**
-- Trained by iteratively adding noise to an image and trying to recreate the original image from the noise. This is specifically referred to as *pixel* diffusion.
-- *Latent* diffusion, as used by the StableDiffusion & FLUX models, actually involves VAEs. A VAE is pre-trained on real images, then the diffusion process runs in the VAE's latent space, as this is less computationally expensive than running diffusion in higher-dimensional pixel space (as in *pixel* diffusion).
+- Trained by iteratively adding noise to an image and trying to recreate the original image from the noise.
+- When the noise is added to image *pixels*, this is called *pixel* diffusion.
+- *Latent* diffusion, as used by the StableDiffusion & FLUX models, actually involves VAEs. A VAE is pre-trained on real images, then the diffusion process runs in the VAE's *latent* space, as this is less computationally expensive than running diffusion in higher-dimensional pixel space (as in *pixel* diffusion).
     - Most open-source models are *latent* diffusion models as they are relatively cheap to train and run.
-- Diffusion *transformers* replace the traditional U-Net architecture of diffusion models with a transformer. The latent (i.e the downsampled image) is split into patches and processed by a transformer. This architecture is used in the FLUX and SD3 models.
+- Diffusion *transformers* replace the traditional U-Net architecture of diffusion models with a transformer. The latent (i.e the compressed image) is split into patches and processed by a transformer. This architecture is used in the FLUX and SD3 models.
 
 **Multi-modal LLMs**
 - These models understand images and can also generate them. This is different from an image generator attached to a text encoder; in the same way that an LLM predicts the next text token in a sequence, a native multi-modal LLM can predict the next image token (in the same sequence as the text). The LLM draws on its knowledge and skills (e.g reasoning) to figure out how to produce images that match the text prompt. This is why this architecture has shown an improvement in generating images containing text.
-- Google's Nano Banana and GPT Image 2 are examples of such a model. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image by giving the model a text prompt. The exact architecures of these examples are not published, however there are open-source alternatives such as BAGEL and Qwen Image. The latter consists of 3 components: an MLLM, a VAE and a diffusion transformer.
+- Google's Nano Banana and GPT Image 2 are examples of such a model. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image by giving the model a text prompt. The exact architecures of these examples are not published.
 
 
 ### Timeline
@@ -81,7 +82,7 @@ The main architectures are outlined in this section.
  <img src="readme_images/generation_timeline.png" width='75%' />
 </center>
 
-The field has transitioned from convolution-based architectures (GANs, autoencoders) to transformer-based architectures (diffusion transformers, multi-modal LLMs). Later we'll see how detection methods have evolved accordingly.
+The field has transitioned from architectures with convolutions at the heart of the generative component (GANs, autoencoders) to transformer-based generation (diffusion transformers, multi-modal LLMs). However, it's worth noting that latent diffusion models involve VAEs which are convolutional. Later we'll see how detection methods have evolved accordingly.
 
 There isn't a definitive source for which synthetic-image-generation models are the *best* at the moment. However, the top rankings of the [Arena](https://arena.ai/leaderboard/text-to-image) text-to-image leaderboard include the following (as of 3rd August 2026):
 
@@ -89,10 +90,9 @@ There isn't a definitive source for which synthetic-image-generation models are 
 - Reve 2.1 
 - Google Nano Banana 2
 
-While the GPT and Nano Banana models are natively multi-modal LLMs, Reve is not. For many of the entries, details about the model architecture haven't been released publicly. Even if we had this information, we wouldn't be able to conclusively say whether natively multi-modal LLMs outperform other architectures due to there being too many other factors that differ in how these models are trained, e.g the amount of data and compute available to the company.
+While the GPT and Nano Banana models are natively multi-modal LLMs, Reve combines an LLM backbone for 'planning' and a diffusion component for 'rendering'. The [Reve website](https://app.reve.com/model) states: "*Diffusion models generate beautiful images, but they're not very intelligent or scalable. Autoregressive models (LLMs) are extremely intelligent, but...latency makes creative iteration painfully slow. Reve 2.1 leverages the best of both worlds by separating planning from rendering.*" Reve also claims to mitigate degradation caused by the accumulation of diffusion and compression artifacts which result from iterative editing. They don't explain how, but they claim "*no accumulation of artifacts whatsoever*".
 
-Interestingly, the [Reve website](https://app.reve.com/model) provides the following explanation of their chosen architecture: "*Diffusion models generate beautiful images, but they're not very intelligent or scalable. Autoregressive models (LLMs) are extremely intelligent, but...latency makes creative iteration painfully slow. Reve 2.1 leverages the best of both worlds by separating planning from rendering.*" Reve also claims to mitigate degradation caused by the accumulation of diffusion and compression artifacts which result from iterative editing. They don't explain how, but they claim "*no accumulation of artifacts whatsoever*". In the following section we'll look at the research on detecting images generated by native multi-modal models.
-
+For many of the entries, details about the model architecture haven't been released publicly. Even if we had this information, we wouldn't be able to conclusively say whether natively multi-modal LLMs outperform other architectures due to there being too many other factors that differ in how these models are trained, e.g the amount of data and compute available to the company. It's also worth noting that the number of votes and width of confidence intervals can vary a lot on the arena leaderboard.
 
 ## How are synthetic images detected?
 
