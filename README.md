@@ -75,14 +75,14 @@ The main architectures are outlined in this section.
 - These models understand images and can also generate them. This is different from an image generator attached to a text encoder; in the same way that an LLM predicts the next text token in a sequence, a native multi-modal LLM can predict the next image token (in the same sequence as the text). The LLM draws on its knowledge and skills (e.g reasoning) to figure out how to produce images that match the text prompt. This is why this architecture has shown an improvement in generating images containing text.
 - Google's Nano Banana and GPT Image 2 are examples of such a model. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image by giving the model a text prompt. The exact architecures of these examples are not published.
 
+We haven't discussed text conditioning. In non-LLM image generation architectures, a text encoder (e.g CLIP) is attached to the image generator, and it converts a text prompt into embeddings. Then, inside the image generation model (e.g the U-Net layers of latent diffusion models or the transformer blocks of a diffusion transformer) are cross-attention layers in which image regions attend to text tokens so that each region draws on the words most relevant to it. Some models such as Stable Diffusion 3 use self-attention rather than cross-attention since they first concatenates image and text tokens into a single sequence. Note that text-conditioned image generation was possible before the attention mechanism was invented; text was embedded into a vector, but there was no way for a given image region to know what part of the text prompt was relevant.
+
 
 ### Timeline
 
 <center>
  <img src="readme_images/generation_timeline.png" width='75%' />
 </center>
-
-The field has transitioned from architectures with convolutions at the heart of the generative component (GANs, autoencoders) to transformer-based generation (diffusion transformers, multi-modal LLMs). However, it's worth noting that latent diffusion models involve VAEs which are convolutional. Later we'll see how detection methods have evolved accordingly.
 
 There isn't a definitive source for which synthetic-image-generation models are the *best* at the moment. However, the top rankings of the [Arena](https://arena.ai/leaderboard/text-to-image) text-to-image leaderboard include the following (as of 3rd August 2026):
 
@@ -93,6 +93,21 @@ There isn't a definitive source for which synthetic-image-generation models are 
 While the GPT and Nano Banana models are natively multi-modal LLMs, Reve combines an LLM backbone for 'planning' and a diffusion component for 'rendering'. The [Reve website](https://app.reve.com/model) states: "*Diffusion models generate beautiful images, but they're not very intelligent or scalable. Autoregressive models (LLMs) are extremely intelligent, but...latency makes creative iteration painfully slow. Reve 2.1 leverages the best of both worlds by separating planning from rendering.*" Reve also claims to mitigate degradation caused by the accumulation of diffusion and compression artifacts which result from iterative editing. They don't explain how, but they claim "*no accumulation of artifacts whatsoever*".
 
 For many of the entries, details about the model architecture haven't been released publicly. Even if we had this information, we wouldn't be able to conclusively say whether natively multi-modal LLMs outperform other architectures due to there being too many other factors that differ in how these models are trained, e.g the amount of data and compute available to the company. It's also worth noting that the number of votes and width of confidence intervals can vary a lot on the arena leaderboard.
+
+#### Summary: How have image-generation model architectures evolved?
+
+In order to understand the evolution of synthetic-image-detection techniques, we need to understnd how the various generation-model architectures compare.
+
+The adversarial nature of GANs can make training unstable and lead to 'collapse'. We won't go into detail about this, but the key thing to note is that diffusion models don't suffer from the same issues. As a result, diffusion models are easier to train and can generate more diverse images. So, while GANs were state-of-the-art for a while before 2020, they were largely replaced by diffusion models.
+
+
+
+
+
+
+An observation that might be relevant in the detection section is that
+
+The field has transitioned from architectures with convolutions at the heart of the generative component (GANs, autoencoders) to transformer-based generation (diffusion transformers, multi-modal LLMs). However, it's worth noting that latent diffusion models involve VAEs which are convolutional. Later we'll see how detection methods have evolved accordingly.
 
 ## How are synthetic images detected?
 
