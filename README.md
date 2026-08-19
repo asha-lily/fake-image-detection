@@ -40,7 +40,7 @@ The motivation for this research project comes from the increasing prevalence of
 
 ### Aims
 
-The technology used to generate images, video, audio etc is advancing faster than our ability to reliably detect synthetic content. As the European Parliament notes in their [2025 briefing](https://www.europarl.europa.eu/RegData/etudes/BRIE/2025/775855/EPRS_BRI%282025%29775855_EN.pdf) on 'Children and deepfakes': '*no single robust solution currently exists to detect and reduce the spread of harmful AI-generated content.*'
+The technology used to generate images, video, audio etc is advancing faster than our ability to reliably detect synthetic content. As the European Parliament notes in their 2025 briefing on 'Children and deepfakes': '*no single robust solution currently exists to detect and reduce the spread of harmful AI-generated content.*'[^eu-parliament]
 
 I'd like to learn more about how synthetic images are generated and how we can detect them. 
 
@@ -53,6 +53,12 @@ Given enough time I'd be interested in using techniques such as class activation
 
 The main architectures are outlined in this section.
 
+*TO DO: update*
+**Autoregressive**
+- Operate on discrete image tokens
+- Treat image generation as a sequence modelling problem, encoding images into discrete tokens using VQ-VAE, then autoregressiely predicting the next token given previous tokens
+- Suffers from slow generation
+
 **GANs**
 - Consist of a generator network that creates synthetic content, alongside a discriminator which tries to distinguish real vs synthetic. The two networks are trained in an adversarial process.
 - Commonly used for face synthesis, e.g StyleGAN
@@ -60,23 +66,28 @@ The main architectures are outlined in this section.
 - Can be used to synchronise lip movements with audio in videos, e.g Wav2Lip
 
 **Autoencoders**
-- An encoder embeds the image; a decoder reconstructs the image from the embedding
+- An encoder embeds the image; a decoder reconstructs the image from the embedding. These are convolutional neural networks.
 - Face swapping can be achieved by exchanging the encoded features between different images
 - *Variational* autoencoders (VAEs) are a distinct type of autoencoder. While a basic autoencoder encodes an image to the same set of features every time (i.e it's deterministic), a variational autoencoder encodes a probaility distribution for each feature. Regularisation smooths this latent space, therefore by sampling from it they can generate new data similar to the original training data. While autoencoders were never widely used as images generators due to them generating blurry images, they became an important component in latent diffusion models and many native multi-modal LLMs.
 
 **Diffusion models**
-- Trained by iteratively adding noise to an image and trying to recreate the original image from the noise.
+- Trained by iteratively adding noise to an image and predicting the added noise. At inference time this process is reversed to produce an image from noise, conditioned on a text prompt.
+- The original diffusion models used for image generation had U-Net architectures. Like autoencoders, these are convolutional neural networks consisting of an encoder and decoder, however the output of a U-Net is not the same as the input. The U-Net was designed for image segmentation, i.e outputting a 'mask' the same size as the input image but with each pixel labelled with its class. Instead of a mask, diffusion U-Nets output noise in the same size as the input noisy image, so that it can be subtracted from the input.
 - When the noise is added to image *pixels*, this is called *pixel* diffusion.
 - *Latent* diffusion, as used by the StableDiffusion & FLUX models, actually involves VAEs. A VAE is pre-trained on real images, then the diffusion process runs in the VAE's *latent* space, as this is less computationally expensive than running diffusion in higher-dimensional pixel space (as in *pixel* diffusion).
     - Most open-source models are *latent* diffusion models as they are relatively cheap to train and run.
-- Diffusion *transformers* replace the traditional U-Net architecture of diffusion models with a transformer. The latent (i.e the compressed image) is split into patches and processed by a transformer. This architecture is used in the FLUX and SD3 models.
+- Diffusion *transformers* replace the traditional U-Net architecture of diffusion models with a transformer. The latent (i.e the compressed image) is split into patches and processed by a transformer. The main advantage over the U-Net architecture is better scalability[^iclr-blog], i.e greater performance gain as more parameters are added. The diffusion transformer architecture is used in the FLUX and SD3 models.
+
+Before we move on to multi-modal LLMs, we should briefly discuss text conditioning. In non-LLM image generation architectures, a text encoder (e.g CLIP) is attached to the image generator, and it converts a text prompt into embeddings. Then, inside the image generation model (e.g the U-Net layers of latent diffusion models or the transformer blocks of a diffusion transformer) are cross-attention layers in which image regions attend to text tokens so that each region draws on the words most relevant to it. Some models such as Stable Diffusion 3 use self-attention rather than cross-attention since they first concatenate image and text tokens into a single sequence; these are called multi-modal diffusion transformers (MMDiT). Note that text-conditioned image generation was possible before the attention mechanism was invented; text was embedded into a vector, but there was no way for a given image region to know what part of the text prompt was relevant.
+
+Multi-modal diffusion transformers are a good link to the next section on multi-modal LLMs. MMDiTs process image and text tokens concatenated into the same sequence. Multi-modal LLMs also operate on combined text-image token sequences, so in theory an MMDiT and LLM can be combined, i.e they can share the same set of weights and context window.
 
 **Multi-modal LLMs**
 - These models understand images and can also generate them. This is different from an image generator attached to a text encoder; in the same way that an LLM predicts the next text token in a sequence, a native multi-modal LLM can predict the next image token (in the same sequence as the text). The LLM draws on its knowledge and skills (e.g reasoning) to figure out how to produce images that match the text prompt. This is why this architecture has shown an improvement in generating images containing text.
 - Google's Nano Banana and GPT Image 2 are examples of such a model. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image by giving the model a text prompt. The exact architecures of these examples are not published.
 
-We haven't discussed text conditioning. In non-LLM image generation architectures, a text encoder (e.g CLIP) is attached to the image generator, and it converts a text prompt into embeddings. Then, inside the image generation model (e.g the U-Net layers of latent diffusion models or the transformer blocks of a diffusion transformer) are cross-attention layers in which image regions attend to text tokens so that each region draws on the words most relevant to it. Some models such as Stable Diffusion 3 use self-attention rather than cross-attention since they first concatenates image and text tokens into a single sequence. Note that text-conditioned image generation was possible before the attention mechanism was invented; text was embedded into a vector, but there was no way for a given image region to know what part of the text prompt was relevant.
 
+- DiT: a unified architecture that leverages advances in multimodal integration.
 - Link text encoder component to planning, and diffusion to rendering? Multi-modal LLMs replace encoder with LLM as planning component, but still use diffusion to render?
 
 
@@ -86,7 +97,7 @@ We haven't discussed text conditioning. In non-LLM image generation architecture
  <img src="readme_images/generation_timeline.png" width='75%' />
 </center>
 
-There isn't a definitive source for which synthetic-image-generation models are the *best* at the moment. However, the top rankings of the [Arena](https://arena.ai/leaderboard/text-to-image) text-to-image leaderboard include the following (as of 3rd August 2026):
+There isn't a definitive source for which synthetic-image-generation models are the *best* at the moment. However, the top rankings of the Arena text-to-image leaderboard[^arena-leaderboard] include the following (as of 3rd August 2026):
 
 - GPT Image 2 
 - Reve 2.1 
@@ -333,3 +344,6 @@ Next, see `notebooks/dataset_exploration.ipynb`, which documents building the da
 # References
 
 [^reve]: https://app.reve.com/model
+[^eu-parliament]: https://www.europarl.europa.eu/RegData/etudes/BRIE/2025/775855/EPRS_BRI%282025%29775855_EN.pdf
+[^arena-leaderboard]: https://arena.ai/leaderboard/text-to-image
+[^iclr-blog]: https://iclr-blogposts.github.io/2026/blog/2026/diffusion-architecture-evolution/
