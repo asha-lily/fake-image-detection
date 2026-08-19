@@ -62,7 +62,7 @@ The main architectures are outlined in this section.
 **Autoencoders**
 - An encoder embeds the image; a decoder reconstructs the image from the embedding
 - Face swapping can be achieved by exchanging the encoded features between different images
-- *Variational* autoencoders (VAEs) are a distinct type of autoencoder. While a basic autoencoder encodes an image to the same set of features every time (i.e it's deterministic), a variational autoencoder encodes a probaility distribution for each feature. Therefore, by sampling from this distribution they can generate new data similar to the original training data.
+- *Variational* autoencoders (VAEs) are a distinct type of autoencoder. While a basic autoencoder encodes an image to the same set of features every time (i.e it's deterministic), a variational autoencoder encodes a probaility distribution for each feature. Regularisation smooths this latent space, therefore by sampling from it they can generate new data similar to the original training data. While autoencoders were never widely used as images generators due to them generating blurry images, they became an important component in latent diffusion models and many native multi-modal LLMs.
 
 **Diffusion models**
 - Trained by iteratively adding noise to an image and trying to recreate the original image from the noise.
@@ -77,6 +77,8 @@ The main architectures are outlined in this section.
 
 We haven't discussed text conditioning. In non-LLM image generation architectures, a text encoder (e.g CLIP) is attached to the image generator, and it converts a text prompt into embeddings. Then, inside the image generation model (e.g the U-Net layers of latent diffusion models or the transformer blocks of a diffusion transformer) are cross-attention layers in which image regions attend to text tokens so that each region draws on the words most relevant to it. Some models such as Stable Diffusion 3 use self-attention rather than cross-attention since they first concatenates image and text tokens into a single sequence. Note that text-conditioned image generation was possible before the attention mechanism was invented; text was embedded into a vector, but there was no way for a given image region to know what part of the text prompt was relevant.
 
+- Link text encoder component to planning, and diffusion to rendering? Multi-modal LLMs replace encoder with LLM as planning component, but still use diffusion to render?
+
 
 ### Timeline
 
@@ -90,7 +92,7 @@ There isn't a definitive source for which synthetic-image-generation models are 
 - Reve 2.1 
 - Google Nano Banana 2
 
-While the GPT and Nano Banana models are natively multi-modal LLMs, Reve combines an LLM backbone for 'planning' and a diffusion component for 'rendering'. The [Reve website](https://app.reve.com/model) states: "*Diffusion models generate beautiful images, but they're not very intelligent or scalable. Autoregressive models (LLMs) are extremely intelligent, but...latency makes creative iteration painfully slow. Reve 2.1 leverages the best of both worlds by separating planning from rendering.*" Reve also claims to mitigate degradation caused by the accumulation of diffusion and compression artifacts which result from iterative editing. They don't explain how, but they claim "*no accumulation of artifacts whatsoever*".
+While the GPT and Nano Banana models are natively multi-modal LLMs, Reve combines an LLM backbone for 'planning' and a diffusion component for 'rendering'. The Reve website[^reve] states: "*Diffusion models generate beautiful images, but they're not very intelligent or scalable. Autoregressive models (LLMs) are extremely intelligent, but...latency makes creative iteration painfully slow. Reve 2.1 leverages the best of both worlds by separating planning from rendering.*" Reve also claims to mitigate degradation caused by the accumulation of diffusion and compression artifacts which result from iterative editing. They don't explain how, but they claim "*no accumulation of artifacts whatsoever*".
 
 For many of the entries, details about the model architecture haven't been released publicly. Even if we had this information, we wouldn't be able to conclusively say whether natively multi-modal LLMs outperform other architectures due to there being too many other factors that differ in how these models are trained, e.g the amount of data and compute available to the company. It's also worth noting that the number of votes and width of confidence intervals can vary a lot on the arena leaderboard.
 
@@ -100,7 +102,11 @@ In order to understand the evolution of synthetic-image-detection techniques, we
 
 The adversarial nature of GANs can make training unstable and lead to 'collapse'. We won't go into detail about this, but the key thing to note is that diffusion models don't suffer from the same issues. As a result, diffusion models are easier to train and can generate more diverse images. So, while GANs were state-of-the-art for a while before 2020, they were largely replaced by diffusion models.
 
-
+- pixel diffusion vs latent diffusion
+- U-Net diffusion vs transformer (both within VAE)
+- diffusion vs multi-modal LLM. Need to understand how diffusion is used as a component of the latter, and why. E.g planning vs rendering (see Reve)
+    - diffusion good at rendering but not planning what's in the image, i.e making it semantically similar to the text. This is a strength of LLMs
+- transition from convolutional to transformer-based generation (see below)
 
 
 
@@ -319,3 +325,11 @@ Next, see `notebooks/dataset_exploration.ipynb`, which documents building the da
 - review 'How are synthetic images generated?' section
 - NITRE robust AI-generated image detection in the wild
 - review 'How are synthetic images detected?' - provide details for each bullet point?
+
+# The future of image generation & detection
+- video, audio, world models?
+
+
+# References
+
+[^reve]: https://app.reve.com/model
