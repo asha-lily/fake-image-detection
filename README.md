@@ -59,16 +59,16 @@ The main architectures are outlined in this section.
 - Treat image generation as a sequence modelling problem, encoding images into discrete tokens using VQ-VAE, then autoregressiely predicting the next token given previous tokens
 - Suffers from slow generation
 
+**Autoencoders**
+- An encoder embeds the image; a decoder reconstructs the image from the embedding. These are convolutional neural networks.
+- Face swapping can be achieved by exchanging the encoded features between different images
+- *Variational* autoencoders (VAEs) are a distinct type of autoencoder. While a basic autoencoder encodes an image to the same set of features every time (i.e it's deterministic), a variational autoencoder encodes a probaility distribution for each feature. Regularisation smooths this latent space, therefore by sampling from it they can generate new data similar to the original training data. While autoencoders were never widely used as images generators due to them generating blurry images, they became an important component in latent diffusion models and many native multi-modal LLMs.
+
 **GANs**
 - Consist of a generator network that creates synthetic content, alongside a discriminator which tries to distinguish real vs synthetic. The two networks are trained in an adversarial process.
 - Commonly used for face synthesis, e.g StyleGAN
 - Also used for face morphing, e.g for generating synthetic identities
 - Can be used to synchronise lip movements with audio in videos, e.g Wav2Lip
-
-**Autoencoders**
-- An encoder embeds the image; a decoder reconstructs the image from the embedding. These are convolutional neural networks.
-- Face swapping can be achieved by exchanging the encoded features between different images
-- *Variational* autoencoders (VAEs) are a distinct type of autoencoder. While a basic autoencoder encodes an image to the same set of features every time (i.e it's deterministic), a variational autoencoder encodes a probaility distribution for each feature. Regularisation smooths this latent space, therefore by sampling from it they can generate new data similar to the original training data. While autoencoders were never widely used as images generators due to them generating blurry images, they became an important component in latent diffusion models and many native multi-modal LLMs.
 
 **Diffusion models**
 - Trained by iteratively adding noise to an image and predicting the added noise. At inference time this process is reversed to produce an image from noise, conditioned on a text prompt.
@@ -78,16 +78,24 @@ The main architectures are outlined in this section.
     - Most open-source models are *latent* diffusion models as they are relatively cheap to train and run.
 - Diffusion *transformers* replace the traditional U-Net architecture of diffusion models with a transformer. The latent (i.e the compressed image) is split into patches and processed by a transformer. The main advantage over the U-Net architecture is better scalability[^iclr-blog], i.e greater performance gain as more parameters are added. The diffusion transformer architecture is used in the FLUX and SD3 models.
 
-Before we move on to multi-modal LLMs, we should briefly discuss text conditioning. In non-LLM image generation architectures, a text encoder (e.g CLIP) is attached to the image generator, and it converts a text prompt into embeddings. Then, inside the image generation model (e.g the U-Net layers of latent diffusion models or the transformer blocks of a diffusion transformer) are cross-attention layers in which image regions attend to text tokens so that each region draws on the words most relevant to it. Some models such as Stable Diffusion 3 use self-attention rather than cross-attention since they first concatenate image and text tokens into a single sequence; these are called multi-modal diffusion transformers (MMDiT). Note that text-conditioned image generation was possible before the attention mechanism was invented; text was embedded into a vector, but there was no way for a given image region to know what part of the text prompt was relevant.
+Before we move on to multi-modal LLMs, we should briefly discuss text conditioning. 
 
-Multi-modal diffusion transformers are a good link to the next section on multi-modal LLMs. MMDiTs process image and text tokens concatenated into the same sequence. Multi-modal LLMs also operate on combined text-image token sequences, so in theory an MMDiT and LLM can be combined, i.e they can share the same set of weights and context window.
+**Text Conditioning**
+
+We've discussed how images can be generated, but not how we can specify the content of the image.
+
+Separate from the image generation model, we need a text encoder; CLIP[^clip] is commonly used here. CLIP consists of an image encoder and text encoder, both trained to map images and their corresponding text description close to one another in a shared embedding space. Therefore, to condition image generation on text we take CLIP's text encoder and use it to embed a text prompt. Diffusion models have cross-attention layers in which image regions attend to text tokens so that each region draws on the words most relevant to it. But how do we get these image tokens? In a DiT the input noise latent is split into patches which are then embedded. We've mentioned that U-Nets consist of convolutional layers, but a key detail is that they also contain attention blocks which tokenise (flatten) the feature maps output by the convolutional layers.
+
+Some models such as Stable Diffusion 3 use self-attention rather than cross-attention since they first concatenate image and text tokens into a single sequence; these are called multi-modal diffusion transformers (MMDiT). Note that text-conditioned image generation was possible before the attention mechanism was invented; text was embedded into a vector, but there was no way for a given image region to know what part of the text prompt was relevant.
+
+Multi-modal diffusion transformers are a good link to the next section on multi-modal LLMs. Like MMDiTs, multi-modal LLMs operate on combined text-image token sequences, so in theory an MMDiT and LLM can be combined, i.e they can share the same set of weights and context window.
 
 **Multi-modal LLMs**
 - These models understand images and can also generate them. This is different from an image generator attached to a text encoder; in the same way that an LLM predicts the next text token in a sequence, a native multi-modal LLM can predict the next image token (in the same sequence as the text). The LLM draws on its knowledge and skills (e.g reasoning) to figure out how to produce images that match the text prompt. This is why this architecture has shown an improvement in generating images containing text.
 - Google's Nano Banana and GPT Image 2 are examples of such a model. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image by giving the model a text prompt. The exact architecures of these examples are not published.
 
 
-- DiT: a unified architecture that leverages advances in multimodal integration.
+- LLMs improve semantic accuracy of generated images beyond what diffusion models can achieve alone
 - Link text encoder component to planning, and diffusion to rendering? Multi-modal LLMs replace encoder with LLM as planning component, but still use diffusion to render?
 
 
@@ -347,3 +355,4 @@ Next, see `notebooks/dataset_exploration.ipynb`, which documents building the da
 [^eu-parliament]: https://www.europarl.europa.eu/RegData/etudes/BRIE/2025/775855/EPRS_BRI%282025%29775855_EN.pdf
 [^arena-leaderboard]: https://arena.ai/leaderboard/text-to-image
 [^iclr-blog]: https://iclr-blogposts.github.io/2026/blog/2026/diffusion-architecture-evolution/
+[^clip]: https://openai.com/index/clip/
