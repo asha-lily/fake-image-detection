@@ -88,16 +88,12 @@ Separate from the image generation model, we need a text encoder; CLIP[^clip] is
 
 Some models such as Stable Diffusion 3 use self-attention rather than cross-attention since they first concatenate image and text tokens into a single sequence; these are called multi-modal diffusion transformers (MMDiT). Note that text-conditioned image generation was possible before the attention mechanism was invented; text was embedded into a vector, but there was no way for a given image region to know what part of the text prompt was relevant.
 
-Multi-modal diffusion transformers are a good link to the next section on multi-modal LLMs. Like MMDiTs, multi-modal LLMs operate on combined text-image token sequences, so in theory an MMDiT and LLM can be combined, i.e they can share the same set of weights and context window.
+Multi-modal diffusion transformers are a good link to the next section on multi-modal LLMs. Like MMDiTs, multi-modal LLMs operate on combined text-image token sequences, so in theory an MMDiT and LLM can be combined.
 
 **Multi-modal LLMs**
-- These models understand images and can also generate them. This is different from an image generator attached to a text encoder; in the same way that an LLM predicts the next text token in a sequence, a native multi-modal LLM can predict the next image token (in the same sequence as the text). The LLM draws on its knowledge and skills (e.g reasoning) to figure out how to produce images that match the text prompt. This is why this architecture has shown an improvement in generating images containing text.
-- Google's Nano Banana and GPT Image 2 are examples of such a model. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image by giving the model a text prompt. The exact architecures of these examples are not published.
-
-
-- LLMs improve semantic accuracy of generated images beyond what diffusion models can achieve alone
-- Link text encoder component to planning, and diffusion to rendering? Multi-modal LLMs replace encoder with LLM as planning component, but still use diffusion to render?
-
+- While older image generation models consisted of a text encoder attached to a diffusion model, native multi-modal LLMs can predict the next image token in the same sequence as text.
+- While the exact architecture of multi-modal-LLM-based image generation models varies a lot between companies, it's important to note that they often still involve a diffusion component. This component renders an image from the latent output by the LLM. The LLM draws on its knowledge and skills (e.g reasoning) to produce image latents that more closely match the text prompt; this is why this architecture has shown an improvement in generating images containing text.
+- Google's Nano Banana and GPT Image 2 are examples of multi-modal LLMs. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image. The exact architecures of these examples are not published.
 
 ### Timeline
 
@@ -112,6 +108,8 @@ There isn't a definitive source for which synthetic-image-generation models are 
 - Google Nano Banana 2
 
 While the GPT and Nano Banana models are natively multi-modal LLMs, Reve combines an LLM backbone for 'planning' and a diffusion component for 'rendering'. The Reve website[^reve] states: "*Diffusion models generate beautiful images, but they're not very intelligent or scalable. Autoregressive models (LLMs) are extremely intelligent, but...latency makes creative iteration painfully slow. Reve 2.1 leverages the best of both worlds by separating planning from rendering.*" Reve also claims to mitigate degradation caused by the accumulation of diffusion and compression artifacts which result from iterative editing. They don't explain how, but they claim "*no accumulation of artifacts whatsoever*".
+
+- Reve is not a multi-modal LLM, but GPT Image 2 is? What's actually the difference?
 
 For many of the entries, details about the model architecture haven't been released publicly. Even if we had this information, we wouldn't be able to conclusively say whether natively multi-modal LLMs outperform other architectures due to there being too many other factors that differ in how these models are trained, e.g the amount of data and compute available to the company. It's also worth noting that the number of votes and width of confidence intervals can vary a lot on the arena leaderboard.
 
@@ -346,7 +344,18 @@ Next, see `notebooks/dataset_exploration.ipynb`, which documents building the da
 - review 'How are synthetic images detected?' - provide details for each bullet point?
 
 # The future of image generation & detection
-- video, audio, world models?
+
+How can image generation be improved further? 'Despite high fidelity and complex prompt following, systems still struggle with spatial reasoning, persistent state, long-horizon consistency, and causal understanding--excelling at appearance while falling short of structural, temporal and causal coherence. We argue the field must move beyond appearance synthesis to intelligent visual generation'.[^future-improvements]
+
+It's most likely possible to continue closing the gap between real and synthetic images, but is anyone asking whether we should? Won't this do more harm than good? What's actually motivating us to create more and more realistic synthetic images? 
+
+- video, audio, world models? World modelling is top level in the visual intelligence taxonomy defined in [^future-improvements]
+
+
+# Outisde of scope
+- Model architecture details
+- How are multi-modal LLMs trained to perform image generation and editing?
+    - How have training techniques advances to produce improved results?
 
 
 # References
@@ -356,3 +365,4 @@ Next, see `notebooks/dataset_exploration.ipynb`, which documents building the da
 [^arena-leaderboard]: https://arena.ai/leaderboard/text-to-image
 [^iclr-blog]: https://iclr-blogposts.github.io/2026/blog/2026/diffusion-architecture-evolution/
 [^clip]: https://openai.com/index/clip/
+[^future-improvements]: https://arxiv.org/abs/2604.28185
