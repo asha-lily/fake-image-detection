@@ -53,16 +53,17 @@ Given enough time I'd be interested in using techniques such as class activation
 
 The main architectures are outlined in this section.
 
-*TO DO: update*
 **Autoregressive**
-- Operate on discrete image tokens
-- Treat image generation as a sequence modelling problem, encoding images into discrete tokens using VQ-VAE, then autoregressiely predicting the next token given previous tokens
-- Suffers from slow generation
+- This method treats images as a sequence of pixels or tokens, and predicts them one at a time based on the previous ones.
+- This was found to be very slow when operating at the pixel-level, but was improved by encoding each image patch as a token from a vocabulary of visual patterns
+- An example of an autoregressive image generation model is DALL-E1, released in 2021. This has a transformer architecture which predicts the image tokens then passes them to a VQ-VAE decoder to produce pixels. We won't explore the details of the architecture here, but the following blog posts explain them very well: [^dalle1-1][^dalle1-2].
+- Ultimately autoregressive models were overtaken by diffusion models, which are more efficient and better at rendering the image. For example DALL-E1's successor DALL-E2 replaced autoregressive image generation with diffusion. However, we'll see at the end of this section that autoregression has made a come back in image generation with the use of LLMs.
 
 **Autoencoders**
 - An encoder embeds the image; a decoder reconstructs the image from the embedding. These are convolutional neural networks.
 - Face swapping can be achieved by exchanging the encoded features between different images
-- *Variational* autoencoders (VAEs) are a distinct type of autoencoder. While a basic autoencoder encodes an image to the same set of features every time (i.e it's deterministic), a variational autoencoder encodes a probaility distribution for each feature. Regularisation smooths this latent space, therefore by sampling from it they can generate new data similar to the original training data. While autoencoders were never widely used as images generators due to them generating blurry images, they became an important component in latent diffusion models and many native multi-modal LLMs.
+- *Variational* autoencoders (VAEs) are a distinct type of autoencoder. While a basic autoencoder encodes an image to the same set of features every time (i.e it's deterministic), a variational autoencoder encodes a probaility distribution for each feature. Regularisation smooths this latent space, therefore by sampling from it they can generate new data similar to the original training data. 
+- While autoencoders were never widely used as images generators due to them generating blurry images, they became an important component in latent diffusion models and many native multi-modal LLMs.
 
 **GANs**
 - Consist of a generator network that creates synthetic content, alongside a discriminator which tries to distinguish real vs synthetic. The two networks are trained in an adversarial process.
@@ -93,13 +94,6 @@ Multi-modal diffusion transformers are a good link to the next section on multi-
 **Multi-modal LLMs**
 - While older image generation models consisted of a text encoder attached to a diffusion model, native multi-modal LLMs can predict the next image token in the same sequence as text.
 - While the exact architecture of multi-modal-LLM-based image generation models varies a lot between companies, it's important to note that they often still involve a diffusion component. This component renders an image from the latent output by the LLM. The LLM draws on its knowledge and skills (e.g reasoning) to produce image latents that more closely match the text prompt; this is why this architecture has shown an improvement in generating images containing text.
-- Google's Nano Banana and GPT Image 2 are examples of multi-modal LLMs. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image. The exact architecures of these examples are not published.
-
-### Timeline
-
-<center>
- <img src="readme_images/generation_timeline.png" width='75%' />
-</center>
 
 There isn't a definitive source for which synthetic-image-generation models are the *best* at the moment. However, the top rankings of the Arena text-to-image leaderboard[^arena-leaderboard] include the following (as of 3rd August 2026):
 
@@ -107,11 +101,17 @@ There isn't a definitive source for which synthetic-image-generation models are 
 - Reve 2.1 
 - Google Nano Banana 2
 
-While the GPT and Nano Banana models are natively multi-modal LLMs, Reve combines an LLM backbone for 'planning' and a diffusion component for 'rendering'. The Reve website[^reve] states: "*Diffusion models generate beautiful images, but they're not very intelligent or scalable. Autoregressive models (LLMs) are extremely intelligent, but...latency makes creative iteration painfully slow. Reve 2.1 leverages the best of both worlds by separating planning from rendering.*" Reve also claims to mitigate degradation caused by the accumulation of diffusion and compression artifacts which result from iterative editing. They don't explain how, but they claim "*no accumulation of artifacts whatsoever*".
+Google's Nano Banana and GPT Image 2 are examples of multi-modal LLMs. As well as generating new images, they make editing images very easy, for example adding a generated object to a real image. The exact architecures of these examples are not published. Reve combines an LLM backbone for 'planning' and a diffusion component for 'rendering'. The Reve website[^reve] states: "*Diffusion models generate beautiful images, but they're not very intelligent or scalable. Autoregressive models (LLMs) are extremely intelligent, but...latency makes creative iteration painfully slow. Reve 2.1 leverages the best of both worlds by separating planning from rendering.*" Reve also claims to mitigate degradation caused by the accumulation of diffusion and compression artifacts which result from iterative editing. They don't explain how, but they claim "*no accumulation of artifacts whatsoever*".
 
-- Reve is not a multi-modal LLM, but GPT Image 2 is? What's actually the difference?
+For many of the entries in the leaderboard, details about the model architecture haven't been released publicly. Even if we had this information, we wouldn't be able to conclusively say whether natively multi-modal LLMs outperform other architectures due to there being too many other factors that differ in how these models are trained, e.g the amount of data and compute available to the company. It's also worth noting that the number of votes and width of confidence intervals can vary a lot on the arena leaderboard.
 
-For many of the entries, details about the model architecture haven't been released publicly. Even if we had this information, we wouldn't be able to conclusively say whether natively multi-modal LLMs outperform other architectures due to there being too many other factors that differ in how these models are trained, e.g the amount of data and compute available to the company. It's also worth noting that the number of votes and width of confidence intervals can vary a lot on the arena leaderboard.
+### Timeline
+
+<center>
+ <img src="readme_images/generation_timeline.png" width='75%' />
+</center>
+
+
 
 #### Summary: How have image-generation model architectures evolved?
 
@@ -351,6 +351,7 @@ It's most likely possible to continue closing the gap between real and synthetic
 
 - video, audio, world models? World modelling is top level in the visual intelligence taxonomy defined in [^future-improvements]
 
+Upon the release of DALL-E1 in 2021, OpenAI said [^openai-dalle]: "We recognize that work involving generative models has the potential for significant, broad societal impacts. In the future, we plan to analyze how models like DALL·E relate to societal issues like economic impact on certain work processes and professions, the potential for bias in the model outputs, and the longer term ethical challenges implied by this technology". Five years later, have they performed this analysis?
 
 # Outisde of scope
 - Model architecture details
@@ -366,3 +367,6 @@ It's most likely possible to continue closing the gap between real and synthetic
 [^iclr-blog]: https://iclr-blogposts.github.io/2026/blog/2026/diffusion-architecture-evolution/
 [^clip]: https://openai.com/index/clip/
 [^future-improvements]: https://arxiv.org/abs/2604.28185
+[^openai-dalle]: https://openai.com/index/dall-e/
+[^dalle1-1]: https://mlberkeley.substack.com/p/vq-vae?utm_source=publication-search
+[^dalle1-2]: https://mlberkeley.substack.com/p/dalle2?utm_source=publication-search
