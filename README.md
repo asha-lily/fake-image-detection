@@ -53,25 +53,25 @@ Given enough time I'd be interested in using techniques such as class activation
 
 The main architectures are outlined in this section.
 
-**Autoregressive**
+#### Autoregressive
 - This method treats images as a sequence of pixels or tokens, and predicts them one at a time based on the previous ones.
 - This was found to be very slow when operating at the pixel-level, but was improved by encoding each image patch as a token from a vocabulary of visual patterns
 - An example of an autoregressive image generation model is DALL-E1, released in 2021. This has a transformer architecture which predicts the image tokens then passes them to a VQ-VAE decoder to produce pixels. We won't explore the details of the architecture here, but the following blog posts explain them very well: [^dalle1-1][^dalle1-2].
 - Ultimately autoregressive models were overtaken by diffusion models, which are more efficient and better at rendering the image. For example DALL-E1's successor DALL-E2 replaced autoregressive image generation with diffusion. However, we'll see at the end of this section that autoregression has made a come back in image generation with the use of LLMs.
 
-**Autoencoders**
+#### Autoencoders
 - An encoder embeds the image; a decoder reconstructs the image from the embedding. These are convolutional neural networks.
 - Face swapping can be achieved by exchanging the encoded features between different images
 - *Variational* autoencoders (VAEs) are a distinct type of autoencoder. While a basic autoencoder encodes an image to the same set of features every time (i.e it's deterministic), a variational autoencoder encodes a probaility distribution for each feature. Regularisation smooths this latent space, therefore by sampling from it they can generate new data similar to the original training data. 
 - While autoencoders were never widely used as images generators due to them generating blurry images, they became an important component in latent diffusion models and many native multi-modal LLMs.
 
-**GANs**
+#### GANs
 - Consist of a generator network that creates synthetic content, alongside a discriminator which tries to distinguish real vs synthetic. The two networks are trained in an adversarial process.
 - Commonly used for face synthesis, e.g StyleGAN
 - Also used for face morphing, e.g for generating synthetic identities
 - Can be used to synchronise lip movements with audio in videos, e.g Wav2Lip
 
-**Diffusion models**
+#### Diffusion models
 - Trained by iteratively adding noise to an image and predicting the added noise. At inference time this process is reversed to produce an image from noise, conditioned on a text prompt.
 - The original diffusion models used for image generation had U-Net architectures. Like autoencoders, these are convolutional neural networks consisting of an encoder and decoder, however the output of a U-Net is not the same as the input. The U-Net was designed for image segmentation, i.e outputting a 'mask' the same size as the input image but with each pixel labelled with its class. Instead of a mask, diffusion U-Nets output noise in the same size as the input noisy image, so that it can be subtracted from the input.
 - When the noise is added to image *pixels*, this is called *pixel* diffusion.
@@ -81,7 +81,7 @@ The main architectures are outlined in this section.
 
 Before we move on to multi-modal LLMs, we should briefly discuss text conditioning. 
 
-**Text Conditioning**
+#### Text Conditioning
 
 We've discussed how images can be generated, but not how we can specify the content of the image.
 
@@ -91,7 +91,7 @@ Some models such as Stable Diffusion 3 use self-attention rather than cross-atte
 
 Multi-modal diffusion transformers are a good link to the next section on multi-modal LLMs. Like MMDiTs, multi-modal LLMs operate on combined text-image token sequences, so in theory an MMDiT and LLM can be combined.
 
-**Multi-modal LLMs**
+#### Multi-modal LLMs 
 - While older image generation models consisted of a text encoder attached to a diffusion model, native multi-modal LLMs can predict the next image token in the same sequence as text.
 - While the exact architecture of multi-modal-LLM-based image generation models varies a lot between companies, it's important to note that they often still involve a diffusion component. This component renders an image from the latent output by the LLM. The LLM draws on its knowledge and skills (e.g reasoning) to produce image latents that more closely match the text prompt; this is why this architecture has shown an improvement in generating images containing text.
 
