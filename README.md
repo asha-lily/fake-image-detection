@@ -136,10 +136,10 @@ The field has transitioned from architectures with convolutions at the heart of 
     - digital "forensics", e.g looking at patterns in noise
     - modern generators don't leave behind the artifacts that these techniques rely on
 - CNNs
-    - Notably, the 2020 Wang et al paper (see [literature review paper 1](#paper-1)) found that systematic flaws in CNN-generated images could be detected by a CNN classifier.
+    - Notably, the 2020 Wang et al paper (see [^detect-paper1]) found that systematic flaws in CNN-generated images could be detected by a CNN classifier.
     - CNNs remain competitive as synthetic image detectors  
 - Frequency / spectral methods
-    - See [literature review paper 10](#paper-10), which detects spectral artifacts created by GANs
+    - See [^detect-paper10], which detects spectral artifacts created by GANs
     - Diffusion models leave weaker spectral artifacts than GANs, so this method is less effective at detection diffusion-generated images.
 - Transformers
     - E.g fine-tuned vision transformer classifiers
@@ -186,7 +186,7 @@ While the most recent research is of interest, I have also sourced some older pa
  
 In my opinion the images in the CIFAKE dataset look clearly AI-generated, which is unsuprising given that this paper is a couple of years old and diffusion models have surpassed GANs as state-of-the-art.
 
-#### Paper 4: Towards universal fake image detectors that generalize across generative models[^detect-paper4] ('UniversalFakeDetect') (April 2024)
+#### Paper 4: Towards universal fake image detectors that generalize across generative models[^UniversalFakeDetect-paper] ('UniversalFakeDetect') (April 2024)
 - Highlighted that existing fake image detectors struggle to generalise to images from different generative models when trained on GAN-generated images
 - To address this, the authors propose constructing a feature space using CLIP:ViT, e.g using nearest neighbour search to classify real vs fake
 
@@ -211,9 +211,9 @@ Highlights the following issues across AI-generated image detection research:
 - Created a dataset of 2000 images produced by various methods including diffusion & GAN
 - Benchmarked 4 major multi-modal LLMs against other detectors
 
-In this study I found it interesting that the models generally rejected (i.e refused to provide a response for) fewer images when the word `fake` in the prompt was replaced with `generated`. This highlights the sensitivity of LLMs to the precise wording of the prompt and the potential unreliability that results from this combined with the fact that explainability can be impacted by hallucinations (which is also highlighted in [ThinkFake](https://arxiv.org/pdf/2509.19841)).
+In this study I found it interesting that the models generally rejected (i.e refused to provide a response for) fewer images when the word `fake` in the prompt was replaced with `generated`. This highlights the sensitivity of LLMs to the precise wording of the prompt and the potential unreliability that results from this combined with the fact that explainability can be impacted by hallucinations (which is also highlighted in [^detect-paper7]).
 
-The [FakeExplained](https://arxiv.org/pdf/2504.14245) paper highlights the same issues, but attempts to address them in different ways. Like FakeExplained, the [AIGI-Holmes dataset](https://huggingface.co/datasets/zzy0123/AIGI-Holmes-Dataset) also labels images with bounding boxes and descriptions. Unfortunately, due to the lack of standardised benchmarks (as highlighted [here](https://arxiv.org/pdf/2511.02791)), the performance of these approaches can't be compared side-by-side.
+The [^detect-paper8] paper highlights the same issues, but attempts to address them in different ways. Like FakeExplained, the [^aigi-holmes-dataset] also labels images with bounding boxes and descriptions. Unfortunately, due to the lack of standardised benchmarks (as highlighted [^detect-paper-5]), the performance of these approaches can't be compared side-by-side.
 
 This study frames the limitations of MLLMs in a broader context: '*while MLLMs show promise in detecting AI-generated images, challenges remain in interpretability and alignment with human perception*...*ethically, ensuring transparency and accountability in detection models is critical, especially in sensitive areas like forensics and law enforcement.*'
 
@@ -228,7 +228,7 @@ This study frames the limitations of MLLMs in a broader context: '*while MLLMs s
 
 This research has given me some ideas to build upon my original plan of fine-tuning a model to classify real vs synthetic images. 
 
-My initial focus will be on fine-tuning a vision transformer. I like the idea implemented in [UniversalFakeDetect](https://arxiv.org/pdf/2302.10174): training on GAN-generated images and testing on diffusion-generated images in order to test the model's ability to generalise to images from a different model type. 
+My initial focus will be on fine-tuning a vision transformer. I like the idea implemented in [^UniversalFakeDetect-paper]: training on GAN-generated images and testing on diffusion-generated images in order to test the model's ability to generalise to images from a different model type. 
 
 Beyond this, I'd be interested to compare my model's performance to that of an MLLM, experimenting with prompt engineering techniques and potentially fine-tuning.
 
@@ -242,13 +242,13 @@ My research into synthetic datasets is summarised in the table below. Note that 
 
 | Dataset Name | Model Type | Year of creation | Good enough quality to use? | Num real | Description of real images | Num synthetic | Description of synthetic images | Licence |
 |-----|-----|-----|-----|-----|----------|-----|----------|-------|
-| [diffusion_datasets](https://github.com/WisconsinAIVision/UniversalFakeDetect) | Diffusion | 2020 | No | 1000 | imagenet | 9000 | 1000 images from 9 different models | MIT (no restrictions)
-| [progan](https://github.com/WisconsinAIVision/UniversalFakeDetect) | GAN | 2020 | No | 4200 | 21 classes (objects & animals); 201 of each | 4200 | 21 classes (objects and animals); 201 of each | MIT (no restrictions) |
-| [dragon_train_xs](https://huggingface.co/datasets/lesc-unifi/dragon/tree/main) | Diffusion | 2024 - 2025 | Maybe | 0 | | 250 |  25 different models; only 10 images from each (same 10 prompts given to each model, so images are very similar) | Creative commons (fine for commercial & private use) |
-| [AIS-4SD](https://zenodo.org/records/15131117) | Diffusion | 2025 | Only 500 faces are usable (StableDiffusion-3-faces-20250203-1545) | 0 | | 4000 | 4 different models; 1000 images from each. 500 of people & 500 of other generic things | MIT |
-| [SFHQ-T2I](https://www.kaggle.com/datasets/selfishgene/sfhq-t2i-synthetic-faces-from-text-2-image-models/data) | Diffusion | 2023 / 2024 | Yes | 0 | | 1700 |  All human faces. Produced by 2 different models. | MIT |
-| [SFHQ_part1](https://www.kaggle.com/datasets/selfishgene/synthetic-faces-high-quality-sfhq-part-1) | GAN | 2022 / 2023 | Yes | 0 | | 550 | All human faces | Creative commons |
-| [CocoGlide](https://arxiv.org/pdf/2212.10957) | Diffusion | 2022 | Maybe | 512 | | 512 | The synthetic images are very similar to the real ones - model just used for in-painting, not generation | Can’t find the original source! |
+| [^diffusion-datasets] | Diffusion | 2020 | No | 1000 | imagenet | 9000 | 1000 images from 9 different models | MIT (no restrictions)
+| [^diffusion-datasets] | GAN | 2020 | No | 4200 | 21 classes (objects & animals); 201 of each | 4200 | 21 classes (objects and animals); 201 of each | MIT (no restrictions) |
+| [^dragon_dataset] | Diffusion | 2024 - 2025 | Maybe | 0 | | 250 |  25 different models; only 10 images from each (same 10 prompts given to each model, so images are very similar) | Creative commons (fine for commercial & private use) |
+| [^AIS-4SD] | Diffusion | 2025 | Only 500 faces are usable (StableDiffusion-3-faces-20250203-1545) | 0 | | 4000 | 4 different models; 1000 images from each. 500 of people & 500 of other generic things | MIT |
+| [^SFHQ-T2I] | Diffusion | 2023 / 2024 | Yes | 0 | | 1700 |  All human faces. Produced by 2 different models. | MIT |
+| [^SFHQ-part1] | GAN | 2022 / 2023 | Yes | 0 | | 550 | All human faces | Creative commons |
+| [^CocoGlide] | Diffusion | 2022 | Maybe | 512 | | 512 | The synthetic images are very similar to the real ones - model just used for in-painting, not generation | Can’t find the original source! |
 
 From across AIS-4SD & SFHQ-T2I we have 2200 diffusion-generated images of human faces, so I'm restricted to focusing my experiments on human faces. Unfortunately the real images I’ve found so far are not of human faces, so I need to look for some of these. 
 
@@ -271,7 +271,7 @@ Another idea for future work is to evaluate performance on test sets from differ
 
 ### Image Augmentations
 
-[This paper](https://www.peren.gouv.fr/en/perenlab/2025-02-11_ai_summit/#lenjeu-interroger-les-d%C3%A9tecteurs-%C3%A0-l%C3%A9tat-de-lart-%C3%A0-bon-escient) from the French government focuses on the use of AI-generated content on social media, and the difficulty of detecting it. They apply transformations such as JPEG compression, addition of text, aesthetic filters and resizing, with the aim of imitating the progressive alteration of images as they are shared across social media. They highlight that manipulating synthetic images in ways such as these degrade the images and mask flaws related to their generation, *‘making it easier to deceive users and also impairing the capabilities of detection systems.’*
+This paper[^french-gov-paper] from the French government focuses on the use of AI-generated content on social media, and the difficulty of detecting it. They apply transformations such as JPEG compression, addition of text, aesthetic filters and resizing, with the aim of imitating the progressive alteration of images as they are shared across social media. They highlight that manipulating synthetic images in ways such as these degrade the images and mask flaws related to their generation, *‘making it easier to deceive users and also impairing the capabilities of detection systems.’*
 
 Image augmentations are especially important to prevent patterns in image quality, composition etc - which differ between the real & synthetic datasets - being learned by the model. With the datasets I’m using, composition is something I’m concerned about because the real images are cropped quite close to the faces, and they tend to look head-on at the camera, whereas in the synthetic images the pose varies more and the position of and amount of background around the person varies. Therefore we should consider:
 - Applying random crops to both sets of images
@@ -309,11 +309,11 @@ In summary, the research validates my concerns about image quality and strongly 
 Most open-source ViTs were pre-trained on ImageNet or CLIP. There is also the Laion dataset, which was used to train stable diffusion among other text-to-image models. It comes in 2 versions: one trained on 400 million images and the other trained on 5 billion.
 
 ### ViT trained on ImageNet
-- The original release of ImageNet contained [3 ‘people’ categories](https://www.image-net.org/update-sep-17-2019.php): scuba diver, bridegroom & baseball player, out of a total of 1000 categories. Other categories may contain people, but they are not the main subject of the image.
+- The original release of ImageNet contained 3 ‘people’ categories[^image-net]: scuba diver, bridegroom & baseball player, out of a total of 1000 categories. Other categories may contain people, but they are not the main subject of the image.
 - In 2019, for privacy reasons all human faces in ImageNet were blurred
 
 ### ViT trained on CLIP
-- [While OpenAI has never explicitly specified or shared the data used to train the original CLIP model, the CLIP paper mentions that the model was trained on 400 million image-text pairs collected from the Internet](https://voxel51.com/blog/a-history-of-clip-model-training-data-advances).
+- While OpenAI has never explicitly specified or shared the data used to train the original CLIP model, the CLIP paper mentions that the model was trained on 400 million image-text pairs collected from the Internet[^clip-training-data].
 - Presumably this data contained some human faces
 - Given that the faces in ImageNet were blurred but those used to train CLIP were not, perhaps CLIP is a better choice. Comparing the performance of the two is another experiment we could do, but to start with let’s use CLIP.
 - We can look on hugging face for open-source vision transformers that have been pre-trained on CLIP
@@ -368,18 +368,25 @@ Upon the release of DALL-E1 in 2021, OpenAI said [^openai-dalle]: "We recognize 
 [^openai-dalle]: https://openai.com/index/dall-e/
 [^dalle1-1]: https://mlberkeley.substack.com/p/vq-vae?utm_source=publication-search
 [^dalle1-2]: https://mlberkeley.substack.com/p/dalle2?utm_source=publication-search
-[^detect-paper1]: https://openaccess.thecvf.com/content_CVPR_2020/papers/Wang_CNN-Generated_Images_Are_Surprisingly_Easy_to_Spot..._for_Now_CVPR_2020_paper.pdf
+[^detect-paper1]: https://arxiv.org/abs/1912.11035
 [^detect-paper2]: https://www.mdpi.com/2313-433X/9/10/199
 [^detect-paper3]: https://ieeexplore.ieee.org/document/10409290
-[^detect-paper4]: https://arxiv.org/pdf/2302.10174
-[^detect-paper5]: https://arxiv.org/pdf/2511.02791 
+[^UniversalFakeDetect-paper]: https://arxiv.org/abs/2302.10174
+[^detect-paper5]: https://arxiv.org/abs/2511.02791
 [^detect-paper6]: https://arxiv.org/html/2506.07045v1#S3
-[^detect-paper7]: https://arxiv.org/pdf/2509.19841
-[^detect-paper8]: https://arxiv.org/pdf/2504.14245
-[^detect-paper9]: https://arxiv.org/pdf/2203.11807
-[^detect-paper10]: https://openaccess.thecvf.com/content/CVPR2025/papers/Karageorgiou_Any-Resolution_AI-Generated_Image_Detection_by_Spectral_Learning_CVPR_2025_paper.pdf
-[^detect-paper11]: https://arxiv.org/html/2509.21864v1
-[^detect-paper12]: https://arxiv.org/html/2511.21507
-
-# TO DO: replace pdf links with main arxiv page links
-# replace references to detection papers with citations
+[^detect-paper7]: https://arxiv.org/abs/2509.19841
+[^detect-paper8]: https://arxiv.org/abs/2504.14245
+[^detect-paper9]: https://arxiv.org/abs/2203.11807
+[^detect-paper10]: https://arxiv.org/abs/2411.19417
+[^detect-paper11]: https://arxiv.org/abs/2509.21864
+[^detect-paper12]: https://arxiv.org/abs/2511.21507
+[^aigi-holmes-dataset]: https://huggingface.co/datasets/zzy0123/AIGI-Holmes-Dataset
+[^diffusion-datasets]: https://github.com/WisconsinAIVision/UniversalFakeDetect
+[^dragon-dataset]: https://huggingface.co/datasets/lesc-unifi/dragon/tree/main
+[^AIS-4SD]: https://zenodo.org/records/15131117
+[^SFHQ-T2I]: https://www.kaggle.com/datasets/selfishgene/sfhq-t2i-synthetic-faces-from-text-2-image-models/data
+[^SFHQ-part1]: https://www.kaggle.com/datasets/selfishgene/synthetic-faces-high-quality-sfhq-part-1
+[^CocoGlide]: https://arxiv.org/abs/2212.10957
+[^french-gov-paper]: https://www.peren.gouv.fr/en/perenlab/2025-02-11_ai_summit/#lenjeu-interroger-les-d%C3%A9tecteurs-%C3%A0-l%C3%A9tat-de-lart-%C3%A0-bon-escient
+[^image-net]: https://www.image-net.org/update-sep-17-2019.php
+[^clip-training-data]: https://voxel51.com/blog/a-history-of-clip-model-training-data-advances
