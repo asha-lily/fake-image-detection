@@ -242,13 +242,13 @@ My research into synthetic datasets is summarised in the table below. Note that 
 
 | Dataset Name | Model Type | Year of creation | Good enough quality to use? | Num real | Description of real images | Num synthetic | Description of synthetic images | Licence |
 |-----|-----|-----|-----|-----|----------|-----|----------|-------|
-| [^diffusion-datasets] | Diffusion | 2020 | No | 1000 | imagenet | 9000 | 1000 images from 9 different models | MIT (no restrictions)
-| [^diffusion-datasets] | GAN | 2020 | No | 4200 | 21 classes (objects & animals); 201 of each | 4200 | 21 classes (objects and animals); 201 of each | MIT (no restrictions) |
-| [^dragon_dataset] | Diffusion | 2024 - 2025 | Maybe | 0 | | 250 |  25 different models; only 10 images from each (same 10 prompts given to each model, so images are very similar) | Creative commons (fine for commercial & private use) |
-| [^AIS-4SD] | Diffusion | 2025 | Only 500 faces are usable (StableDiffusion-3-faces-20250203-1545) | 0 | | 4000 | 4 different models; 1000 images from each. 500 of people & 500 of other generic things | MIT |
-| [^SFHQ-T2I] | Diffusion | 2023 / 2024 | Yes | 0 | | 1700 |  All human faces. Produced by 2 different models. | MIT |
-| [^SFHQ-part1] | GAN | 2022 / 2023 | Yes | 0 | | 550 | All human faces | Creative commons |
-| [^CocoGlide] | Diffusion | 2022 | Maybe | 512 | | 512 | The synthetic images are very similar to the real ones - model just used for in-painting, not generation | Can’t find the original source! |
+| diffusion_datasets[^diffusion-datasets] | Diffusion | 2020 | No | 1000 | imagenet | 9000 | 1000 images from 9 different models | MIT (no restrictions)
+| progan[^diffusion-datasets] | GAN | 2020 | No | 4200 | 21 classes (objects & animals); 201 of each | 4200 | 21 classes (objects and animals); 201 of each | MIT (no restrictions) |
+| dragon_train_xs[^dragon-dataset] | Diffusion | 2024 - 2025 | Maybe | 0 | | 250 |  25 different models; only 10 images from each (same 10 prompts given to each model, so images are very similar) | Creative commons (fine for commercial & private use) |
+| AIS-4SD[^AIS-4SD] | Diffusion | 2025 | Only 500 faces are usable (StableDiffusion-3-faces-20250203-1545) | 0 | | 4000 | 4 different models; 1000 images from each. 500 of people & 500 of other generic things | MIT |
+| SFHQ-T2I[^SFHQ-T2I] | Diffusion | 2023 / 2024 | Yes | 0 | | 1700 |  All human faces. Produced by 2 different models. | MIT |
+| SFHQ_part1[^SFHQ-part1] | GAN | 2022 / 2023 | Yes | 0 | | 550 | All human faces | Creative commons |
+| CocoGlide[^CocoGlide] | Diffusion | 2022 | Maybe | 512 | | 512 | The synthetic images are very similar to the real ones - model just used for in-painting, not generation | Can’t find the original source! |
 
 From across AIS-4SD & SFHQ-T2I we have 2200 diffusion-generated images of human faces, so I'm restricted to focusing my experiments on human faces. Unfortunately the real images I’ve found so far are not of human faces, so I need to look for some of these. 
 
