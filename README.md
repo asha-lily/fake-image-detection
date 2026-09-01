@@ -51,28 +51,29 @@ Given enough time I'd be interested in using techniques such as class activation
 
 ## How are synthetic images generated?
 
-The main architectures are outlined in this section.
+The main architectures and methods are outlined in this section.
 
 #### Autoregressive
-- This method treats images as a sequence of pixels or tokens, and predicts them one at a time based on the previous ones.
+- This is a method which treats images as a sequence of pixels or tokens, and predicts them one at a time based on the previous ones. The underlying architecture can be convolutional or transformer-based.
 - This was found to be very slow when operating at the pixel-level, but was improved by encoding each image patch as a token from a vocabulary of visual patterns
 - An example of an autoregressive image generation model is DALL-E1, released in 2021. This has a transformer architecture which predicts the image tokens then passes them to a VQ-VAE decoder to produce pixels. We won't explore the details of the architecture here, but the following blog posts explain them very well: [^dalle1-1][^dalle1-2].
 - Ultimately autoregressive models were overtaken by diffusion models, which are more efficient and better at rendering the image. For example DALL-E1's successor DALL-E2 replaced autoregressive image generation with diffusion. However, we'll see at the end of this section that autoregression has made a come back in image generation with the use of LLMs.
 
 #### Autoencoders
+- This is a model architecture consisting of an encoder and a decoder.
 - An encoder embeds the image; a decoder reconstructs the image from the embedding. These are convolutional neural networks.
 - Face swapping can be achieved by exchanging the encoded features between different images
 - *Variational* autoencoders (VAEs) are a distinct type of autoencoder. While a basic autoencoder encodes an image to the same set of features every time (i.e it's deterministic), a variational autoencoder encodes a probaility distribution for each feature. Regularisation smooths this latent space, therefore by sampling from it they can generate new data similar to the original training data. 
 - While autoencoders were never widely used as images generators due to them generating blurry images, they became an important component in latent diffusion models and many native multi-modal LLMs.
 
 #### GANs
-- Consist of a generator network that creates synthetic content, alongside a discriminator which tries to distinguish real vs synthetic. The two networks are trained in an adversarial process.
+- This architecture consists of a generator network that creates synthetic content, alongside a discriminator which tries to distinguish real vs synthetic. The two networks are trained in an adversarial process.
 - Commonly used for face synthesis, e.g StyleGAN
 - Also used for face morphing, e.g for generating synthetic identities
 - Can be used to synchronise lip movements with audio in videos, e.g Wav2Lip
 
 #### Diffusion models
-- Trained by iteratively adding noise to an image and predicting the added noise. At inference time this process is reversed to produce an image from noise, conditioned on a text prompt.
+- Diffusion is a method in which noise is iteratively added to an image and a model predicts the added noise. At inference time this process is reversed to produce an image from noise, conditioned on a text prompt.
 - The original diffusion models used for image generation had U-Net architectures. Like autoencoders, these are convolutional neural networks consisting of an encoder and decoder, however the output of a U-Net is not the same as the input. The U-Net was designed for image segmentation, i.e outputting a 'mask' the same size as the input image but with each pixel labelled with its class. Instead of a mask, diffusion U-Nets output noise in the same size as the input noisy image, so that it can be subtracted from the input.
 - When the noise is added to image *pixels*, this is called *pixel* diffusion.
 - *Latent* diffusion, as used by the StableDiffusion & FLUX models, actually involves VAEs. A VAE is pre-trained on real images, then the diffusion process runs in the VAE's *latent* space, as this is less computationally expensive than running diffusion in higher-dimensional pixel space (as in *pixel* diffusion).
@@ -105,30 +106,18 @@ Google's Nano Banana and GPT Image 2 are examples of multi-modal LLMs. As well a
 
 For many of the entries in the leaderboard, details about the model architecture haven't been released publicly. Even if we had this information, we wouldn't be able to conclusively say whether natively multi-modal LLMs outperform other architectures due to there being too many other factors that differ in how these models are trained, e.g the amount of data and compute available to the company. It's also worth noting that the number of votes and width of confidence intervals can vary a lot on the arena leaderboard.
 
-### Timeline
+
+#### Summary: How have image-generation model architectures evolved?
 
 <center>
  <img src="readme_images/generation_timeline.png" width='75%' />
 </center>
 
-
-
-#### Summary: How have image-generation model architectures evolved?
-
-In order to understand the evolution of synthetic-image-detection techniques, we need to understnd how the various generation-model architectures compare.
-
 The adversarial nature of GANs can make training unstable and lead to 'collapse'. We won't go into detail about this, but the key thing to note is that diffusion models don't suffer from the same issues. As a result, diffusion models are easier to train and can generate more diverse images. So, while GANs were state-of-the-art for a while before 2020, they were largely replaced by diffusion models.
 
-- pixel diffusion vs latent diffusion
-- U-Net diffusion vs transformer (both within VAE)
-- diffusion vs multi-modal LLM. Need to understand how diffusion is used as a component of the latter, and why. E.g planning vs rendering (see Reve)
-    - diffusion good at rendering but not planning what's in the image, i.e making it semantically similar to the text. This is a strength of LLMs
-- transition from convolutional to transformer-based generation (see below)
+Within the category of diffusion models, we've moved from pixel diffusion to latent diffusion to diffusion transformers (and MMDiT). As mentioned, diffusion transformers are more scalable than the original U-Net diffusion architecture.
 
-
-An observation that might be relevant in the detection section is that
-
-The field has transitioned from architectures with convolutions at the heart of the generative component (GANs, autoencoders) to transformer-based generation (diffusion transformers, multi-modal LLMs). However, it's worth noting that latent diffusion models involve VAEs which are convolutional. Later we'll see how detection methods have evolved accordingly.
+Currently, diffusion models are arguably state-of-the-art for pixel rendering, but where a simple text encoder was once used, now the reasoning skills and knowledge of multi-modal LLMs are harnessed to produce the image latents which get rendered.
 
 ## How are synthetic images detected?
 
@@ -351,10 +340,11 @@ It's most likely possible to continue closing the gap between real and synthetic
 
 Upon the release of DALL-E1 in 2021, OpenAI said [^openai-dalle]: "We recognize that work involving generative models has the potential for significant, broad societal impacts. In the future, we plan to analyze how models like DALL·E relate to societal issues like economic impact on certain work processes and professions, the potential for bias in the model outputs, and the longer term ethical challenges implied by this technology". Five years later, have they performed this analysis?
 
-# Outisde of scope
-- Model architecture details
+# Things I'd like to learn more about
+- Text conditioning in diffusion models
 - How are multi-modal LLMs trained to perform image generation and editing?
     - How have training techniques advances to produce improved results?
+- How do diffusion models render pixels from the image latent produced by a multi-modal LLM?
 
 
 # References
