@@ -119,6 +119,7 @@ Within the category of diffusion models, we've moved from pixel diffusion to lat
 
 Currently, diffusion models are arguably state-of-the-art for pixel rendering, but where a simple text encoder was once used, now the reasoning skills and knowledge of multi-modal LLMs are harnessed to produce the image latents which get rendered.
 
+
 ## How are synthetic images detected?
 
 - Traditional techniques
@@ -337,10 +338,15 @@ How can image generation be improved further? 'Despite high fidelity and complex
 It's most likely possible to continue closing the gap between real and synthetic images, but is anyone asking whether we should? Won't this do more harm than good? What's actually motivating us to create more and more realistic synthetic images? 
 
 - video, audio, world models? World modelling is top level in the visual intelligence taxonomy defined in [^future-improvements]
+- providing synthetic data for training models, e.g self-driving cars?
+- use of generative AI in medical image synthesis[^gen-ai-medical-imaging]
 
 Upon the release of DALL-E1 in 2021, OpenAI said [^openai-dalle]: "We recognize that work involving generative models has the potential for significant, broad societal impacts. In the future, we plan to analyze how models like DALL·E relate to societal issues like economic impact on certain work processes and professions, the potential for bias in the model outputs, and the longer term ethical challenges implied by this technology". Five years later, have they performed this analysis?
 
 # Things I'd like to learn more about
+- 'for continuous data such as images or video the state-of-the-art approach is diffusion, while for discrete data such as text the standard approach is autoregressive'
+- diffusion language models
+
 - Text conditioning in diffusion models
 - How are multi-modal LLMs trained to perform image generation and editing?
     - How have training techniques advances to produce improved results?
@@ -380,3 +386,4 @@ Upon the release of DALL-E1 in 2021, OpenAI said [^openai-dalle]: "We recognize 
 [^french-gov-paper]: https://www.peren.gouv.fr/en/perenlab/2025-02-11_ai_summit/#lenjeu-interroger-les-d%C3%A9tecteurs-%C3%A0-l%C3%A9tat-de-lart-%C3%A0-bon-escient
 [^image-net]: https://www.image-net.org/update-sep-17-2019.php
 [^clip-training-data]: https://voxel51.com/blog/a-history-of-clip-model-training-data-advances
+[^gen-ai-medical-imaging]
