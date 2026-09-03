@@ -237,8 +237,12 @@ For a given dataset:
     - Break down results by generator; [^out-of-box-detection] found that all detectors performed worse on SOTA commercial generators e.g Flux Dev & Midjourney v7
 
 ViT fine-tuned with LoRA vs VLM (prompted) vs small VLM fine-tuned with LoRA.
-- Here the research question is "How does the performance of a ViT compare to that of a VLM (out-of-the-box), and does fine-tuning the VLM improve its performance?"
+- Here the research question is "How does the performance of a ViT compare to that of a VLM (out-of-the-box), and does fine-tuning the VLM improve its performance?". With a single ViT, single VLM and limited data and compute, I won't be able to say much about how the 2 model architectures perform at the task more generally.
 - One hypothesis is that the ViT detects fake images based on low-level artifacts (e.g upsampling patterns, texture statistics), whereas the VLM reasons semantically (e.g it detects implausible anatomy, incoherent text, inconsistent lighting). Since LLM-based image generators are now better at producing images with coherent text and more semantically-sensible features than older models, will VLMs be able to detect them? Do they contain any of the low-level artifacts that ViTs can detect?
+- For explainability, I can ask the VLM to explain its reasoning and/or provide some pre-defined categories of things it might detect e.g implausible anatomy, incoherent text, inconsistent lighting. However I should caveat that this doesn't necessary accurately reflect the VLM's actual reasoning! As for the ViT, I'd like to explore explainability methods such as GRAD-CAM. In both cases I should highlight that the work is exploratory and not proof of the mechanism by which each model distinguishes real from fake.
+- I could also explore detection methods such as an out-of-the-box vision transformer pre-trained on real & fake images, or a linear probe (as a simple baseline). In the interest of time, these will most likely be left as future work.
+- For fine-tuning, I'll most likely stick to LoRA for both the ViT and the VLM. However the PEFT method is a variable that I could potentially vary in future work.
+
 
 ## Experiment Ideas
 
