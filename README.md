@@ -420,7 +420,22 @@ Next, see `notebooks/dataset_exploration.ipynb`, which documents building the da
 - performance metrics
 - batch size (depends on GPU memory capacity)
 - effect of num steps on performance
-- collate the societal impacts that papers reference, e.g forgery...
+
+
+# Pros vs cons
+
+This section collates benefits of synthetic images and societal impacts that papers reference, e.g forgery...
+
+## Pros
+- creating remarkable opportunities for creative innovation[^detect-paper8]
+- produce highly realistic video, enables the creation of music at a level comparable to professional artists[^loki]
+
+## Cons
+- Synthesizing fraudulent faces with diffusion models for scams[^loki]
+- Pose critical societal challenges, particularly in cyber-security, where the proliferation of synthetic images can threaten both individual and public safety[^detect-paper8]
+- significant challenges for multimedia forensics, misinformation detection, and biometric system resulting in erosion of public trust in the legal system, significant increase in frauds, and social engineering attacks.  deepfakes have emerged as critical threats to society, especially in security-sensitive domains. For instance, they can compromise biometrics used for face recognition and identification, surveillance systems, and mislead perception modules in autonomous driving [18, 53]. Additionally, deepfakes pose significant risks in the Internet of Things (IoT) ecosystem and remote authentication systems, where identity integrity is crucial[^tasnim]
+    - Nearly 92% of companies have reported financial losses due to deepfake scams. On average, businesses lose approximately $450,000 per incident, with the financial sector bearing even heavier losses, averaging $600,000 per organization, and in some cases exceeding $1 million.
+    - (the whole intro of this paper is great!)
 
 
 # Questions / To Do
@@ -509,4 +524,5 @@ Upon the release of DALL-E1 in 2021, OpenAI said [^openai-dalle]: "We recognize 
 [^IAPL]: https://arxiv.org/abs/2508.01603
 [^GAPL]: https://arxiv.org/abs/2512.12982
 [^hallucinations]: https://arxiv.org/abs/2403.08542
-[^loki]: https://opendatalab.github.io/LOKI/
+[^loki]: https://arxiv.org/abs/2410.09732
+[^tasnim]: https://arxiv.org/abs/2511.02791
