@@ -53,9 +53,32 @@ When the ViT & MLLM both classify an image as fake, manually investigate whether
 
 ## Data
 
-To avoid differences in content between different generators being learned by the detector, I need to make sure the content in images from different generators is similar. E.g all images of dogs, or all human faces.
+#### Generator diversity
+
+I know that I want my test dataset to consist of images from at least one generator that is as state-of-the-art as I can find, so probably one that is MLLM-based. For my training dataset I want a variety of generator architectures, e.g GAN, diffusion and MLLM-based (but less modern ones than my test dataset).
+
+I first explored the OpenFake[^openfake-dataset] dataset...relatively few MLLM-generated images.
+
+The Community forensics dataset[^community-forensics-dataset] is very large but mostly consists of images produced by diffusion models, so doesn't help much on the MLLM-side.
+
+Microsoft's MNW dataset is only intended for evaluation purposes (not training or commercial purposes).
+
+
+
+#### Dataset content
+
+I want to avoid differences in content between different real and fake images being learned by the detector. E.g if the real images in the training set often contain cats, but the fake images often contain dogs, then a classifier could learn to distinguish cats from dogs but still appear to achieve high accuracy at distinguishing real from fake.
+
+Ideally I would make sure the content in images from different generators, and in real vs fake subsets, is similar. However, given that it is already proving difficult to find data that meets my other requirements (e.g generator diversity), this won't be possible. One thing I could do to identify whether this is actually an issue in the data I collect is to get a model (e.g a MLLM or zero-shot CLIP classifier) to label/classify image content and then look at the distribution broken down by generator type and real vs fake.
+
+#### Data augmentations
 
 Also, the same set of augmentations should be applied to all images. (See research_questions_old.md).
+
+## Fine-tuning a vision transformer
+
+- fine-tune on 500-1000 images from each generator type (GAN, diffusion & MLLM-based)
+- test on at least 500 images (we're only planning to test a single MLLM generator)
 
 
 ## Interpreting the results
@@ -63,3 +86,9 @@ Also, the same set of augmentations should be applied to all images. (See resear
 - ("check research about how ViTs detect — low-level artifacts or semantic?") is written as a literature question, but it's actually your hypothesis, and your explainability experiments are what test it. Promote it. The interesting claim your project can make is: the ViT wins/loses via low-level artifacts (Grad-CAM lands on textures/edges/backgrounds), the MLLM via semantics (rationales cite anatomy, lighting, text) — and here's what happens on a newer generator that has cleaned up the low-level artifacts but not the semantics (or vice versa). That last clause is the genuinely novel bit and it's currently implicit.
 - a fine-tuned specialist ViT vs. a general-purpose MLLM used off-the-shelf isn't a fair fight on accuracy, so the interesting axis becomes mechanism (does the MLLM's semantic reasoning catch things the ViT's artifact-detection misses on a newer generator, and vice versa?), not who scores highe
 - an attribution map shows where the model looks, not why or by what feature, so it's evidence for your hypothesis, not proof of mechanism; and all of these are sensitive to layer choice and hyperparameters, so show a couple of images across methods rather than cherry-picking one clean map
+
+
+# References
+
+[^openfake-dataset]: https://huggingface.co/datasets/ComplexDataLab/OpenFake
+[^community-forensics-dataset]: https://jespark.net/projects/2024/community_forensics/
