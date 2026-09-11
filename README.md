@@ -213,21 +213,6 @@ A 2026 paper by Ren et al partially addresses these topics. When testing a range
 
 An important point that is raised in this paper's conlusion is that "technical detection represents one component alongside source authentication, digital provenance tracking, platform policies, and media literacy education". In the next section `Watermarking & C2PA` we'll briefly discuss the idea of provenance
 
-
-### Timeline
-
-Mahara & Rishe provide more details on detection methods in "Methods and Trends in Detecting AI-Generated Images: A Comprehensive Review"[^detection-methods-review-1].
-
-Like with generation models, detection models have transitioned from convolution-based to transformer-based architectures.
-
-Progression from pixel/frequency artifacts, to learned feature spaces, towards semantic reasoning. Motivation: as generators improved, low-level artifacts weakened, which pushed detection towards higher-level signals.
-
-Detection methods that rely on generator-specific fingerprints become outdated. Those that can detect properties of real images, or semantic inconsistencies are more promising.
-
-Most current state-of-the-art image generation models, e.g those with VLM components, still use diffusion to render the image. Reconstruction-based
-
-There is also the question of whether it will even be possible to detect synthetic images in the future. We've seen detection methods evolve alongside the weaknesses in generation methods, from detecting low-level artifacts to semantic inconsistencies, but we're now seeing such inconsistencies disappear as generators improve.
-
 #### Watermarking & C2PA
 
 Some model providers such as Google add invisible watermarks to their images to enable end-users to identify the image as AI-generated (only certain models / platforms such as Google's Gemini can detect the watermark). While Google's SynthID watermark was designed to be robust to image transformations / manipulations such as compression and filtering, there is some evidence that the watermark can be removed.
@@ -236,46 +221,12 @@ C2PA is another approach to labelling AI-generated content. It uses cryptographi
 
 In August 2026 the EU AI Act will mandate that AI-generated image, audio and text must be tagged as AI-generated, using both a machine-readable watermark and a human-readable label.
 
+### Timeline
 
-## Literature Review
+Mahara & Rishe provide more details on detection methods in "Methods and Trends in Detecting AI-Generated Images: A Comprehensive Review"[^detection-methods-review-1].
 
-While the most recent research is of interest, I have also sourced some older papers (2023) in order to understand how research has progressed over the past few years. Another purpose of this literature review is to source data that I can use in my own experiments.
-
-
-#### Paper 3: CIFAKE: Image Classification and Explainable Identification of AI-Generated Synthetic Images[^detect-paper3] (Jan 2024)
-- Introduces the CIFAKE dataset: synthetic equivalents of CIFAR-10 generated using stable diffusion
-- Trains a CNN for classifying real vs AI-generated images
-- Implements Grad CAM to highlight regions influencing the model's decisions. These heatmaps reveal that the model focuses on subtle imperfections, often in the background, to distinguish real vs synthetic
- 
-In my opinion the images in the CIFAKE dataset look clearly AI-generated, which is unsuprising given that this paper is a couple of years old and diffusion models have surpassed GANs as state-of-the-art.
-
-#### Paper 5: AI-Generated Image Detection: An Empirical Study and Future Research Directions[^detect-paper5] (Nov 2025)
-
-Highlights the following issues across AI-generated image detection research:
-- The limitations of forensic methods
-- The use of non-standardised benchmarks with GAN- or diffusion-generated images
-- Inconsistent training protocols
-- Limited evaluation metrics that fail to capture generalisation & explainability
-
-- CAN MULTI-MODAL (REASONING) LLMS WORK AS DEEPFAKE DETECTORS? (2025) https://arxiv.org/pdf/2503.20084
-- A Timely Survey on Vision Transformer for Deepfake Detection (2024) https://arxiv.org/abs/2405.08463
-
-- Community Forensics: Using Thousands of Generators to Train Fake Image Detectors (2025) [^community-forensics-paper]
-    - "One of the key challenges of detecting AI-generated images is spotting images that have been created by previously unseen generative models"
-    - collected 2.7 million images from 4803 different models
-        - 774K images from diffusion models & GANs
-        - 15K images from 'SOTA' model with unknown architectures, e.g DALL-E2, Midjourney V5, FLUX.1-dev & Imagen 3
-    - study generalisation abilities of fake image detectors
-    - dataset[^community-forensics-dataset]
-    - "Although today’s datasets often contain millions of fake images, they come from a relatively small number of generators. As a result, this data fails to capture many sources of variation that one might encounter in the wild"
-    - "In contrast to observations from recent work, we find that end-to-end training of classifiers based on CNNs or ViTs generalizes well"
+There is now the question of whether it will even be possible to detect synthetic images in the future. We've seen detection methods evolve alongside the weaknesses in generation methods, from detecting low-level artifacts to semantic inconsistencies, but we're now seeing such inconsistencies disappear as generators improve.
         
-
-### Summary
-- Over the past few years, AI-generated image detection techniques have evolved from fine-tuning CNNs, to transformers and more recently, multi-modal LLMs.
-- Data was initially generated using GANs, but  diffusion models have become increasingly popular (I haven't yet explored the details of why this is)
-- CAM-based explainability techniques are often employed to identify areas of the image that the model focuses on / detects artifacts in
-- MLLMs, with their reasoning abilities, show some promise, but also present new challenges such as hallucinations
 
 
 ## Research Questions
@@ -490,7 +441,6 @@ Upon the release of DALL-E1 in 2021, OpenAI said [^openai-dalle]: "We recognize 
 [^detect-paper2]: https://www.mdpi.com/2313-433X/9/10/199
 [^detect-paper3]: https://ieeexplore.ieee.org/document/10409290
 [^UniversalFakeDetect-paper]: https://arxiv.org/abs/2302.10174
-[^detect-paper5]: https://arxiv.org/abs/2511.02791
 [^detect-paper6]: https://arxiv.org/html/2506.07045v1#S3
 [^detect-paper7]: https://arxiv.org/abs/2509.19841
 [^detect-paper8]: https://arxiv.org/abs/2504.14245
@@ -528,3 +478,20 @@ Upon the release of DALL-E1 in 2021, OpenAI said [^openai-dalle]: "We recognize 
 [^hallucinations]: https://arxiv.org/abs/2403.08542
 [^loki]: https://arxiv.org/abs/2410.09732
 [^tasnim]: https://arxiv.org/abs/2511.02791
+
+
+
+## Papers that may be useful
+
+- CAN MULTI-MODAL (REASONING) LLMS WORK AS DEEPFAKE DETECTORS? (2025) https://arxiv.org/pdf/2503.20084
+- A Timely Survey on Vision Transformer for Deepfake Detection (2024) https://arxiv.org/abs/2405.08463
+
+- Community Forensics: Using Thousands of Generators to Train Fake Image Detectors (2025) [^community-forensics-paper]
+    - "One of the key challenges of detecting AI-generated images is spotting images that have been created by previously unseen generative models"
+    - collected 2.7 million images from 4803 different models
+        - 774K images from diffusion models & GANs
+        - 15K images from 'SOTA' model with unknown architectures, e.g DALL-E2, Midjourney V5, FLUX.1-dev & Imagen 3
+    - study generalisation abilities of fake image detectors
+    - dataset[^community-forensics-dataset]
+    - "Although today’s datasets often contain millions of fake images, they come from a relatively small number of generators. As a result, this data fails to capture many sources of variation that one might encounter in the wild"
+    - "In contrast to observations from recent work, we find that end-to-end training of classifiers based on CNNs or ViTs generalizes well"
