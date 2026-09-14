@@ -66,8 +66,9 @@ The Community forensics dataset[^community-forensics-dataset] is very large but 
 Microsoft's MNW dataset is only intended for evaluation purposes (not training or commercial purposes).
 
 
-
 #### Dataset content
+
+The OpenFake dataset was built by using a VLM to generate captions for real images in the LAION dataset. These captions were then used as prompts to generate images. Therefore the real and fake images in the OpenFake dataset should have similar distributions in terms of content.
 
 I want to avoid differences in content between different real and fake images being learned by the detector. E.g if the real images in the training set often contain cats, but the fake images often contain dogs, then a classifier could learn to distinguish cats from dogs but still appear to achieve high accuracy at distinguishing real from fake.
 
