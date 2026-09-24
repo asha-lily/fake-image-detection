@@ -296,4 +296,5 @@ There is now the question of whether it will even be possible to detect syntheti
 [^hallucinations]: https://arxiv.org/abs/2403.08542
 [^loki]: https://arxiv.org/abs/2410.09732
 [^tasnim]: https://arxiv.org/abs/2511.02791
-[^MNW]
+[^MNW]: https://github.com/microsoft/MNW
+[^open-fake]: https://arxiv.org/pdf/2509.09495
