@@ -8,11 +8,25 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "adjusttext>=1.4.0",
+    # pillow
+    # ipykernel?
+    # datasets? (huggingface)
+    "duckdb>=1.5.5",
 ]
 
 [project.optional-dependencies]
 test = [
     "pytest==9.0.1",
+    "torch==2.10.0",
+    "torchvision==0.25.0",
+    
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.6.2",
+    "ruff>=0.16.8",
 ]
 
 [tool.ruff]
