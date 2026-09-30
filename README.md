@@ -298,3 +298,23 @@ There is now the question of whether it will even be possible to detect syntheti
 [^tasnim]: https://arxiv.org/abs/2511.02791
 [^MNW]: https://github.com/microsoft/MNW
 [^open-fake]: https://arxiv.org/pdf/2509.09495
+
+This project uses the OpenFake dataset.
+
+This [dataset](https://huggingface.co/datasets/ComplexDataLab/OpenFake) comes with the [Creative Commons Attribution Non Commercial 4.0 International](https://spdx.org/licenses/CC-BY-NC-4.0) licence, which states that you can copy, share and adapt the dataset for non-commercial purposes, as long as you give attribution.
+
+My use of this dataset is for a personal research project (non-commercial).
+
+Here is the citation provided on the webpage for the dataset:
+
+```
+@misc{livernoche2025openfakeopendatasetplatform,
+      title={OpenFake: An Open Dataset and Platform Toward Real-World Deepfake Detection},
+      author={Victor Livernoche and Akshatha Arodi and Andreea Musulan and Zachary Yang and Adam Salvail and Gaétan Marceau Caron and Jean-François Godbout and Reihaneh Rabbany},
+      year={2025},
+      eprint={2509.09495},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2509.09495},
+}
+```
