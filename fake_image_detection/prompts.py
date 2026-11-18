@@ -40,14 +40,16 @@ USED_SHARDS = frozenset(
     }
 )
 
-# Captions containing these words are skipped: providers refuse such prompts unevenly, which would
-# leave each generator with a different subset of prompts. Extend this as needed.
+# Captions containing these words are skipped, as some model generation APIs might refuse them
 BLOCKED_WORDS = frozenset({
     "nude", "naked", "nsfw", "sexy", "erotic", "lingerie", "topless", "porn",
     "blood", "gore", "corpse", "gun", "rifle", "pistol", "weapon",
     "logo", "trademark", "celebrity", "president",
-})  # fmt: skip
+})
 
+
+MIN_WORDS = 5
+MAX_WORDS = 100
 
 @dataclass(frozen=True)
 class PromptRecord:
@@ -73,7 +75,7 @@ def clean_caption(caption: str) -> str:
 
 def has_proper_noun_pair(caption: str) -> bool:
     """Heuristic for names of people, places or brands: two capitalised words in a row, not at the
-    start of a sentence (e.g. "a portrait of Taylor Swift")."""
+    start of a sentence. Words in this categories might cause the image generation request to be rejected."""
     words = caption.split()
     for i in range(1, len(words) - 1):
         starts_sentence = words[i - 1][-1] in ".!?"
@@ -84,21 +86,26 @@ def has_proper_noun_pair(caption: str) -> bool:
 
 def is_usable_caption(
     caption: str,
-    min_words: int,
-    max_words: int,
-    blocked_words: frozenset[str],
-    drop_proper_nouns: bool,
+    min_words: int = MIN_WORDS,
+    max_words: int = MAX_WORDS,
+    blocked_words: frozenset[str] = BLOCKED_WORDS,
 ) -> bool:
-    """Whether a caption is suitable as a prompt for every generator."""
+    """
+    Whether a caption is suitable as a prompt for every generator.
+    The non-English character threshold is arbitrary and could be tuned.
+    """
     words = caption.split()
     if not min_words <= len(words) <= max_words:
         return False
     # skip mostly non-English captions
-    if sum(char.isascii() for char in caption) / len(caption) < 0.95:
+    if sum(char.isascii() for char in caption) / len(caption) < 0.90:
         return False
     if {word.strip(".,;:!?()\"'").lower() for word in words} & blocked_words:
         return False
-    return not (drop_proper_nouns and has_proper_noun_pair(caption))
+    # skip captions that look like they name a person, place or brand
+    if has_proper_noun_pair(caption):
+        return False
+    return True
 
 
 def short_shard_id(shard_name: str) -> str:
@@ -110,11 +117,7 @@ def short_shard_id(shard_name: str) -> str:
 def extract_laion_prompts(
     shard_name: str,
     num_prompts: int,
-    output_csv: Path,
-    min_words: int = 5,
-    max_words: int = 100,
-    blocked_words: frozenset[str] = BLOCKED_WORDS,
-    drop_proper_nouns: bool = True,
+    output_csv: Path
 ) -> list[PromptRecord]:
     """Stream one OpenFake shard and collect captions of real LAION images as prompts.
 
@@ -123,10 +126,6 @@ def extract_laion_prompts(
         num_prompts: how many prompts to collect. Collect more than you need (e.g. 350 for 300),
             since generators will refuse some prompts.
         output_csv: where to write the prompts.
-        min_words: shortest caption to keep.
-        max_words: longest caption to keep.
-        blocked_words: captions containing any of these words are skipped.
-        drop_proper_nouns: skip captions that look like they name a person, place or brand.
 
     Returns:
         The collected prompts, in shard order.
@@ -151,7 +150,7 @@ def extract_laion_prompts(
         caption = clean_caption(row["prompt"] or "")
         if not caption or caption.lower() in seen_captions:
             continue
-        if not is_usable_caption(caption, min_words, max_words, blocked_words, drop_proper_nouns):
+        if not is_usable_caption(caption):
             continue
 
         seen_captions.add(caption.lower())
