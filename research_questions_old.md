@@ -154,6 +154,7 @@ This section collates benefits of synthetic images and societal impacts that pap
 ## Pros
 - creating remarkable opportunities for creative innovation[^detect-paper8]
 - produce highly realistic video, enables the creation of music at a level comparable to professional artists[^loki]
+- https://www.synthesia.io/post/the-future-of-synthetic-media
 
 ## Cons
 - Synthesizing fraudulent faces with diffusion models for scams[^loki]
@@ -168,6 +169,12 @@ platforms, from social media and online content to traditional media outlets. Hi
 forged speeches or imagery of public figures) and the prevalence of non-consensual intimate imagery
 underscore the potential for harm to political stability, reputation, and public safety [52]. Scholars have
 warned of an “infopocalypse” where constant exposure to fake media breeds cynicism or paranoia[^open-fake]
+
+## Real-world examples
+
+- see Henry Ajder
+- https://thenextweb.com/news/mamdani-ai-apartment-listings-streeteasy
+- National Centre for Information Defence
 
 
 # Questions / To Do
@@ -204,3 +211,8 @@ Upon the release of DALL-E1 in 2021, OpenAI said [^openai-dalle]: "We recognize 
     - How have training techniques advances to produce improved results?
 - How do diffusion models render pixels from the image latent produced by a multi-modal LLM?
 - "Video deepfakes introduce temporal consistency challenges requiring different evaluation approaches"
+
+
+# Why this is deprecated
+
+I built a full pipeline on face datasets because that was the only synthetic data I could find. Auditing it showed the real and fake sets differed in ways unrelated to being fake: crop and pose, file format, resolution. The literature showed detectors happily learn shortcuts like these and still post perfect scores. When my question moved to modern MLLM generators, the face data also lacked the generator diversity I needed. So I switched to OpenFake, which fixes content matching by design and covers MLLM generators. Some of the earlier work carried over: the augmentation tuning and the dataloader design.
